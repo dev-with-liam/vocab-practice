@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HSPT Vocab Practice</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">200 Must-Know Words</p>
+        <h1>HSPT Vocab Practice</h1>
+      </div>
+      <div class="stats" aria-label="Study progress">
+        <span><strong id="masteredCount">0</strong> mastered</span>
+        <span><strong id="streakCount">0</strong> streak</span>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <aside class="sidebar" aria-label="Study controls">
+        <section>
+          <h2>Set</h2>
+          <div id="setButtons" class="set-grid"></div>
+        </section>
+
+        <section>
+          <h2>Mode</h2>
+          <div class="segmented" role="tablist" aria-label="Practice mode">
+            <button class="mode-button active" data-mode="flashcards" type="button">Cards</button>
+            <button class="mode-button" data-mode="quiz" type="button">Quiz</button>
+            <button class="mode-button" data-mode="type" type="button">Type</button>
+            <button class="mode-button" data-mode="list" type="button">List</button>
+          </div>
+        </section>
+
+        <section>
+          <h2>Focus</h2>
+          <label class="check-row">
+            <input id="missedOnly" type="checkbox">
+            <span>Missed or unmastered only</span>
+          </label>
+          <label class="check-row">
+            <input id="shuffleCards" type="checkbox" checked>
+            <span>Shuffle practice order</span>
+          </label>
+        </section>
+
+        <section>
+          <h2>Tools</h2>
+          <div class="tool-grid">
+            <button id="resetProgress" class="secondary" type="button">Reset</button>
+            <button id="exportProgress" class="secondary" type="button">Export</button>
+          </div>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <div class="progress-strip">
+          <div>
+            <span id="scopeLabel">All sets</span>
+            <strong id="scopeCount">200 words</strong>
+          </div>
+          <div class="bar" aria-hidden="true"><span id="progressBar"></span></div>
+        </div>
+
+        <section id="flashcardsPanel" class="panel active" aria-live="polite">
+          <div class="card-stage">
+            <article id="flashcard" class="flashcard" tabindex="0">
+              <p id="cardSet" class="card-meta">Set 1</p>
+              <h2 id="cardWord">Word</h2>
+              <p id="cardPrompt">Tap to reveal synonyms</p>
+              <div id="cardAnswer" class="card-answer" hidden></div>
+            </article>
+          </div>
+          <div class="action-row">
+            <button id="prevCard" class="secondary" type="button">Previous</button>
+            <button id="flipCard" type="button">Reveal</button>
+            <button id="nextCard" class="secondary" type="button">Next</button>
+          </div>
+          <div class="action-row">
+            <button id="markMissed" class="danger" type="button">Missed</button>
+            <button id="markMastered" class="success" type="button">Mastered</button>
+          </div>
+        </section>
+
+        <section id="quizPanel" class="panel" aria-live="polite">
+          <div class="question-card">
+            <p id="quizMeta" class="card-meta"></p>
+            <h2 id="quizQuestion"></h2>
+            <div id="quizOptions" class="options"></div>
+          </div>
+          <p id="quizFeedback" class="feedback"></p>
+          <div class="action-row">
+            <button id="nextQuiz" type="button">Next Question</button>
+          </div>
+        </section>
+
+        <section id="typePanel" class="panel" aria-live="polite">
+          <div class="question-card">
+            <p id="typeMeta" class="card-meta"></p>
+            <h2 id="typePrompt"></h2>
+            <p id="typeSentence" class="sentence"></p>
+            <form id="typeForm" class="type-form">
+              <input id="typeAnswer" autocomplete="off" placeholder="Type the vocabulary word">
+              <button type="submit">Check</button>
+            </form>
+          </div>
+          <p id="typeFeedback" class="feedback"></p>
+          <div class="action-row">
+            <button id="nextType" class="secondary" type="button">Skip</button>
+          </div>
+        </section>
+
+        <section id="listPanel" class="panel">
+          <div class="word-list-head">
+            <input id="searchWords" type="search" placeholder="Search words or synonyms">
+            <span id="listCount"></span>
+          </div>
+          <div id="wordList" class="word-list"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="data/vocabulary.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,319 @@
+const allWords = window.VOCABULARY_WORDS;
+
+const state = {
+  set: "all",
+  mode: "flashcards",
+  order: [],
+  index: 0,
+  revealed: false,
+  currentQuiz: null,
+  currentType: null,
+  progress: loadProgress(),
+};
+
+const els = {
+  setButtons: document.querySelector("#setButtons"),
+  modeButtons: document.querySelectorAll(".mode-button"),
+  masteredCount: document.querySelector("#masteredCount"),
+  streakCount: document.querySelector("#streakCount"),
+  scopeLabel: document.querySelector("#scopeLabel"),
+  scopeCount: document.querySelector("#scopeCount"),
+  progressBar: document.querySelector("#progressBar"),
+  missedOnly: document.querySelector("#missedOnly"),
+  shuffleCards: document.querySelector("#shuffleCards"),
+  panels: {
+    flashcards: document.querySelector("#flashcardsPanel"),
+    quiz: document.querySelector("#quizPanel"),
+    type: document.querySelector("#typePanel"),
+    list: document.querySelector("#listPanel"),
+  },
+  flashcard: document.querySelector("#flashcard"),
+  cardSet: document.querySelector("#cardSet"),
+  cardWord: document.querySelector("#cardWord"),
+  cardPrompt: document.querySelector("#cardPrompt"),
+  cardAnswer: document.querySelector("#cardAnswer"),
+  prevCard: document.querySelector("#prevCard"),
+  flipCard: document.querySelector("#flipCard"),
+  nextCard: document.querySelector("#nextCard"),
+  markMissed: document.querySelector("#markMissed"),
+  markMastered: document.querySelector("#markMastered"),
+  quizMeta: document.querySelector("#quizMeta"),
+  quizQuestion: document.querySelector("#quizQuestion"),
+  quizOptions: document.querySelector("#quizOptions"),
+  quizFeedback: document.querySelector("#quizFeedback"),
+  nextQuiz: document.querySelector("#nextQuiz"),
+  typeMeta: document.querySelector("#typeMeta"),
+  typePrompt: document.querySelector("#typePrompt"),
+  typeSentence: document.querySelector("#typeSentence"),
+  typeForm: document.querySelector("#typeForm"),
+  typeAnswer: document.querySelector("#typeAnswer"),
+  typeFeedback: document.querySelector("#typeFeedback"),
+  nextType: document.querySelector("#nextType"),
+  searchWords: document.querySelector("#searchWords"),
+  listCount: document.querySelector("#listCount"),
+  wordList: document.querySelector("#wordList"),
+  resetProgress: document.querySelector("#resetProgress"),
+  exportProgress: document.querySelector("#exportProgress"),
+};
+
+function loadProgress() {
+  const fallback = { mastered: [], missed: [], streak: 0 };
+  try {
+    return { ...fallback, ...JSON.parse(localStorage.getItem("vocab-progress")) };
+  } catch {
+    return fallback;
+  }
+}
+
+function saveProgress() {
+  localStorage.setItem("vocab-progress", JSON.stringify(state.progress));
+}
+
+function wordId(word) {
+  return `${word.set}-${word.number}-${word.word.toLowerCase()}`;
+}
+
+function scopedWords() {
+  let words = state.set === "all" ? allWords : allWords.filter((word) => word.set === Number(state.set));
+  if (els.missedOnly.checked) {
+    words = words.filter((word) => {
+      const id = wordId(word);
+      return state.progress.missed.includes(id) || !state.progress.mastered.includes(id);
+    });
+  }
+  return words;
+}
+
+function shuffle(items) {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function rebuildOrder() {
+  const words = scopedWords();
+  state.order = els.shuffleCards.checked ? shuffle(words) : words;
+  state.index = 0;
+  state.revealed = false;
+  if (!state.order.length) {
+    state.order = scopedWords();
+  }
+}
+
+function currentWord() {
+  return state.order[state.index] || scopedWords()[0] || allWords[0];
+}
+
+function cleanSynonyms(word) {
+  return word.synonyms.join(", ");
+}
+
+function setStatus(word, status) {
+  const id = wordId(word);
+  state.progress.mastered = state.progress.mastered.filter((item) => item !== id);
+  state.progress.missed = state.progress.missed.filter((item) => item !== id);
+  if (status === "mastered") {
+    state.progress.mastered.push(id);
+    state.progress.streak += 1;
+  }
+  if (status === "missed") {
+    state.progress.missed.push(id);
+    state.progress.streak = 0;
+  }
+  saveProgress();
+  renderStats();
+}
+
+function renderStats() {
+  const scoped = scopedWords();
+  const mastered = scoped.filter((word) => state.progress.mastered.includes(wordId(word))).length;
+  els.masteredCount.textContent = String(state.progress.mastered.length);
+  els.streakCount.textContent = String(state.progress.streak);
+  els.scopeLabel.textContent = state.set === "all" ? "All sets" : `Set ${state.set}`;
+  els.scopeCount.textContent = `${scoped.length} word${scoped.length === 1 ? "" : "s"}`;
+  els.progressBar.style.width = scoped.length ? `${Math.round((mastered / scoped.length) * 100)}%` : "0%";
+}
+
+function renderFlashcard() {
+  const word = currentWord();
+  els.cardSet.textContent = `Set ${word.set} · ${word.partOfSpeech}`;
+  els.cardWord.textContent = word.word;
+  els.cardPrompt.textContent = state.revealed ? word.example : "Tap to reveal synonyms";
+  els.cardAnswer.hidden = !state.revealed;
+  els.cardAnswer.innerHTML = `<strong>${cleanSynonyms(word)}</strong><p>${word.example}</p>`;
+  els.flipCard.textContent = state.revealed ? "Hide" : "Reveal";
+}
+
+function makeQuizQuestion() {
+  const words = scopedWords();
+  const answer = words[Math.floor(Math.random() * words.length)] || allWords[0];
+  const pool = allWords.filter((word) => wordId(word) !== wordId(answer));
+  const distractors = shuffle(pool).slice(0, 3);
+  state.currentQuiz = {
+    answer,
+    options: shuffle([answer, ...distractors]),
+    answered: false,
+  };
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const quiz = state.currentQuiz;
+  els.quizMeta.textContent = `Set ${quiz.answer.set} · ${quiz.answer.partOfSpeech}`;
+  els.quizQuestion.textContent = `Which word means "${quiz.answer.synonyms[0]}"?`;
+  els.quizOptions.innerHTML = "";
+  quiz.options.forEach((option) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = option.word;
+    button.addEventListener("click", () => answerQuiz(option, button));
+    els.quizOptions.append(button);
+  });
+  els.quizFeedback.textContent = "";
+}
+
+function answerQuiz(selected, button) {
+  const quiz = state.currentQuiz;
+  if (quiz.answered) return;
+  quiz.answered = true;
+  const correct = wordId(selected) === wordId(quiz.answer);
+  button.classList.add(correct ? "correct" : "wrong");
+  [...els.quizOptions.children].forEach((optionButton) => {
+    if (optionButton.textContent === quiz.answer.word) optionButton.classList.add("correct");
+    optionButton.disabled = true;
+  });
+  setStatus(quiz.answer, correct ? "mastered" : "missed");
+  els.quizFeedback.textContent = correct
+    ? `Correct. ${quiz.answer.word}: ${cleanSynonyms(quiz.answer)}.`
+    : `Answer: ${quiz.answer.word}. ${cleanSynonyms(quiz.answer)}.`;
+}
+
+function makeTypeQuestion() {
+  const words = scopedWords();
+  state.currentType = words[Math.floor(Math.random() * words.length)] || allWords[0];
+  const word = state.currentType;
+  els.typeMeta.textContent = `Set ${word.set} · ${word.partOfSpeech}`;
+  els.typePrompt.textContent = `Type the word for: ${cleanSynonyms(word)}`;
+  els.typeSentence.textContent = word.example.replace(new RegExp(word.word, "ig"), "_____");
+  els.typeAnswer.value = "";
+  els.typeFeedback.textContent = "";
+  els.typeAnswer.focus();
+}
+
+function normalize(value) {
+  return value.trim().toLowerCase().replace(/[^a-z]/g, "");
+}
+
+function renderList() {
+  const term = els.searchWords.value.trim().toLowerCase();
+  const words = scopedWords().filter((word) => {
+    const haystack = `${word.word} ${word.synonyms.join(" ")} ${word.example}`.toLowerCase();
+    return haystack.includes(term);
+  });
+  els.listCount.textContent = `${words.length} shown`;
+  els.wordList.innerHTML = "";
+  words.forEach((word) => {
+    const item = document.createElement("article");
+    item.className = "word-item";
+    const status = state.progress.mastered.includes(wordId(word)) ? "Mastered" : state.progress.missed.includes(wordId(word)) ? "Missed" : "New";
+    item.innerHTML = `
+      <span class="badge">Set ${word.set} · ${status}</span>
+      <h3>${word.word} <small>(${word.partOfSpeech})</small></h3>
+      <p><strong>${cleanSynonyms(word)}</strong></p>
+      <p>${word.example}</p>
+    `;
+    els.wordList.append(item);
+  });
+}
+
+function switchMode(mode) {
+  state.mode = mode;
+  els.modeButtons.forEach((button) => button.classList.toggle("active", button.dataset.mode === mode));
+  Object.entries(els.panels).forEach(([name, panel]) => panel.classList.toggle("active", name === mode));
+  if (mode === "flashcards") renderFlashcard();
+  if (mode === "quiz") makeQuizQuestion();
+  if (mode === "type") makeTypeQuestion();
+  if (mode === "list") renderList();
+}
+
+function refreshScope() {
+  rebuildOrder();
+  renderStats();
+  switchMode(state.mode);
+}
+
+function setup() {
+  ["all", ...Array.from({ length: 10 }, (_, index) => String(index + 1))].forEach((set) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = set === "all" ? "All" : set;
+    button.classList.toggle("active", set === state.set);
+    button.addEventListener("click", () => {
+      state.set = set;
+      els.setButtons.querySelectorAll("button").forEach((item) => item.classList.remove("active"));
+      button.classList.add("active");
+      refreshScope();
+    });
+    els.setButtons.append(button);
+  });
+
+  els.modeButtons.forEach((button) => button.addEventListener("click", () => switchMode(button.dataset.mode)));
+  els.missedOnly.addEventListener("change", refreshScope);
+  els.shuffleCards.addEventListener("change", refreshScope);
+  els.flashcard.addEventListener("click", () => {
+    state.revealed = !state.revealed;
+    renderFlashcard();
+  });
+  els.flipCard.addEventListener("click", () => {
+    state.revealed = !state.revealed;
+    renderFlashcard();
+  });
+  els.prevCard.addEventListener("click", () => {
+    state.index = (state.index - 1 + state.order.length) % state.order.length;
+    state.revealed = false;
+    renderFlashcard();
+  });
+  els.nextCard.addEventListener("click", () => {
+    state.index = (state.index + 1) % state.order.length;
+    state.revealed = false;
+    renderFlashcard();
+  });
+  els.markMissed.addEventListener("click", () => {
+    setStatus(currentWord(), "missed");
+    els.nextCard.click();
+  });
+  els.markMastered.addEventListener("click", () => {
+    setStatus(currentWord(), "mastered");
+    els.nextCard.click();
+  });
+  els.nextQuiz.addEventListener("click", makeQuizQuestion);
+  els.typeForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const word = state.currentType;
+    const correct = normalize(els.typeAnswer.value) === normalize(word.word);
+    setStatus(word, correct ? "mastered" : "missed");
+    els.typeFeedback.textContent = correct
+      ? `Correct. ${word.word}: ${cleanSynonyms(word)}.`
+      : `Answer: ${word.word}. ${cleanSynonyms(word)}.`;
+  });
+  els.nextType.addEventListener("click", makeTypeQuestion);
+  els.searchWords.addEventListener("input", renderList);
+  els.resetProgress.addEventListener("click", () => {
+    state.progress = { mastered: [], missed: [], streak: 0 };
+    saveProgress();
+    refreshScope();
+  });
+  els.exportProgress.addEventListener("click", async () => {
+    const payload = JSON.stringify(state.progress, null, 2);
+    await navigator.clipboard.writeText(payload);
+    els.exportProgress.textContent = "Copied";
+    setTimeout(() => (els.exportProgress.textContent = "Export"), 1200);
+  });
+
+  refreshScope();
+}
+
+setup();
