@@ -319,7 +319,8 @@ h1 {
 }
 
 .flashcard,
-.question-card {
+.question-card,
+.game-card {
   position: relative;
   width: min(100%, 48rem);
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -333,7 +334,8 @@ h1 {
 }
 
 .flashcard::before,
-.question-card::before {
+.question-card::before,
+.game-card::before {
   content: "";
   position: absolute;
   inset: 0 0 auto;
@@ -347,7 +349,8 @@ h1 {
 }
 
 .flashcard h2,
-.question-card h2 {
+.question-card h2,
+.game-card h2 {
   position: relative;
   margin: 0.3rem 0 1rem;
   font-size: clamp(2.5rem, 7vw, 5.2rem);
@@ -357,6 +360,10 @@ h1 {
 .question-card h2 {
   font-size: clamp(1.45rem, 3vw, 2.55rem);
   line-height: 1.12;
+}
+
+.game-card h2 {
+  font-size: clamp(2rem, 5vw, 4rem);
 }
 
 .flashcard.revealed {
@@ -403,14 +410,16 @@ h1 {
   min-width: 8.5rem;
 }
 
-.options {
+.options,
+.chip-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.7rem;
   margin-top: 1.2rem;
 }
 
-.options button {
+.options button,
+.chip-grid button {
   min-height: 4.25rem;
   text-align: left;
   color: var(--ink);
@@ -418,14 +427,58 @@ h1 {
   box-shadow: none;
 }
 
-.options button.correct {
+.options button.correct,
+.chip-grid button.correct,
+.action-row button.correct {
   color: #052014;
   background: linear-gradient(135deg, var(--green), var(--cyan));
 }
 
-.options button.wrong {
+.options button.wrong,
+.chip-grid button.wrong,
+.action-row button.wrong {
   color: #fff;
   background: linear-gradient(135deg, var(--pink), #be123c);
+}
+
+.sort-clue {
+  display: grid;
+  min-height: 5rem;
+  place-items: center;
+  border: 1px solid rgba(250, 204, 21, 0.34);
+  border-radius: 8px;
+  margin: 1rem 0;
+  color: var(--yellow);
+  background: rgba(250, 204, 21, 0.08);
+  font-size: clamp(1.6rem, 4vw, 3rem);
+  font-weight: 900;
+}
+
+.answer-slots,
+.letter-bank {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(2.7rem, 1fr));
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.answer-slots .slot,
+.letter-bank button {
+  aspect-ratio: 1;
+  min-height: 2.7rem;
+  padding: 0;
+  text-align: center;
+}
+
+.answer-slots .slot {
+  border-style: dashed;
+  color: var(--yellow);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.letter-bank button:disabled {
+  opacity: 0.28;
+  transform: none;
 }
 
 .feedback {

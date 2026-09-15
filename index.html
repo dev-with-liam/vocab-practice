@@ -43,6 +43,15 @@
         </section>
 
         <section>
+          <h2>Mini-games</h2>
+          <div class="segmented" role="tablist" aria-label="Mini-games">
+            <button class="mode-button" data-mode="match" type="button">Match</button>
+            <button class="mode-button" data-mode="sort" type="button">Sort</button>
+            <button class="mode-button" data-mode="scramble" type="button">Scramble</button>
+          </div>
+        </section>
+
+        <section>
           <h2>Power-ups</h2>
           <label class="check-row">
             <input id="missedOnly" type="checkbox">
@@ -105,6 +114,49 @@
           </div>
         </section>
 
+        <section id="matchPanel" class="panel" aria-live="polite">
+          <div class="game-card">
+            <p id="matchMeta" class="card-meta"></p>
+            <h2 id="matchWord"></h2>
+            <p id="matchPrompt" class="sentence"></p>
+            <div id="matchOptions" class="chip-grid"></div>
+          </div>
+          <p id="matchFeedback" class="feedback"></p>
+          <div class="action-row">
+            <button id="nextMatch" type="button">New Match</button>
+          </div>
+        </section>
+
+        <section id="sortPanel" class="panel" aria-live="polite">
+          <div class="game-card">
+            <p id="sortMeta" class="card-meta"></p>
+            <h2 id="sortWord"></h2>
+            <p id="sortClue" class="sort-clue"></p>
+            <div class="action-row">
+              <button id="sortSynonym" type="button">Synonym</button>
+              <button id="sortAntonym" class="secondary" type="button">Opposite</button>
+            </div>
+          </div>
+          <p id="sortFeedback" class="feedback"></p>
+          <div class="action-row">
+            <button id="nextSort" type="button">New Sort</button>
+          </div>
+        </section>
+
+        <section id="scramblePanel" class="panel" aria-live="polite">
+          <div class="game-card">
+            <p id="scrambleMeta" class="card-meta"></p>
+            <h2 id="scrambleClue"></h2>
+            <div id="scrambleAnswer" class="answer-slots"></div>
+            <div id="scrambleLetters" class="letter-bank"></div>
+          </div>
+          <p id="scrambleFeedback" class="feedback"></p>
+          <div class="action-row">
+            <button id="clearScramble" class="secondary" type="button">Clear</button>
+            <button id="nextScramble" type="button">New Scramble</button>
+          </div>
+        </section>
+
         <section id="listPanel" class="panel">
           <div class="word-list-head">
             <input id="searchWords" type="search" placeholder="Search words, synonyms, or antonyms">
@@ -115,9 +167,9 @@
       </section>
     </main>
 
-    <script src="data/vocabulary.js?v=20260915c"></script>
-    <script src="data/exam-vocabulary.js?v=20260915c"></script>
-    <script src="data/simple-vocabulary.js?v=20260915c"></script>
-    <script src="app.js?v=20260915c"></script>
+    <script src="data/vocabulary.js?v=20260915d"></script>
+    <script src="data/exam-vocabulary.js?v=20260915d"></script>
+    <script src="data/simple-vocabulary.js?v=20260915d"></script>
+    <script src="app.js?v=20260915d"></script>
   </body>
 </html>

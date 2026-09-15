@@ -104,6 +104,9 @@ const state = {
   index: 0,
   revealed: false,
   currentQuiz: null,
+  currentMatch: null,
+  currentSort: null,
+  currentScramble: null,
   progress: loadProgress(),
 };
 
@@ -121,6 +124,9 @@ const els = {
   panels: {
     flashcards: document.querySelector("#flashcardsPanel"),
     quiz: document.querySelector("#quizPanel"),
+    match: document.querySelector("#matchPanel"),
+    sort: document.querySelector("#sortPanel"),
+    scramble: document.querySelector("#scramblePanel"),
     list: document.querySelector("#listPanel"),
   },
   flashcard: document.querySelector("#flashcard"),
@@ -138,6 +144,26 @@ const els = {
   quizOptions: document.querySelector("#quizOptions"),
   quizFeedback: document.querySelector("#quizFeedback"),
   nextQuiz: document.querySelector("#nextQuiz"),
+  matchMeta: document.querySelector("#matchMeta"),
+  matchWord: document.querySelector("#matchWord"),
+  matchPrompt: document.querySelector("#matchPrompt"),
+  matchOptions: document.querySelector("#matchOptions"),
+  matchFeedback: document.querySelector("#matchFeedback"),
+  nextMatch: document.querySelector("#nextMatch"),
+  sortMeta: document.querySelector("#sortMeta"),
+  sortWord: document.querySelector("#sortWord"),
+  sortClue: document.querySelector("#sortClue"),
+  sortSynonym: document.querySelector("#sortSynonym"),
+  sortAntonym: document.querySelector("#sortAntonym"),
+  sortFeedback: document.querySelector("#sortFeedback"),
+  nextSort: document.querySelector("#nextSort"),
+  scrambleMeta: document.querySelector("#scrambleMeta"),
+  scrambleClue: document.querySelector("#scrambleClue"),
+  scrambleAnswer: document.querySelector("#scrambleAnswer"),
+  scrambleLetters: document.querySelector("#scrambleLetters"),
+  scrambleFeedback: document.querySelector("#scrambleFeedback"),
+  clearScramble: document.querySelector("#clearScramble"),
+  nextScramble: document.querySelector("#nextScramble"),
   searchWords: document.querySelector("#searchWords"),
   listCount: document.querySelector("#listCount"),
   wordList: document.querySelector("#wordList"),
@@ -182,6 +208,10 @@ function shuffle(items) {
   return copy;
 }
 
+function randomItem(items) {
+  return items[Math.floor(Math.random() * items.length)];
+}
+
 function rebuildOrder() {
   const words = scopedWords();
   state.order = els.shuffleCards.checked ? shuffle(words) : words;
@@ -216,6 +246,12 @@ function cleanAntonyms(word) {
 
 function hasAntonymClue(word) {
   return antonymsFor(word).length > 0;
+}
+
+function gameWords(requireAntonym = false) {
+  const words = requireAntonym ? scopedWords().filter(hasAntonymClue) : scopedWords();
+  if (words.length) return words;
+  return requireAntonym ? allWords.filter(hasAntonymClue) : allWords;
 }
 
 function simpleSentence(word) {
@@ -345,6 +381,187 @@ function answerQuiz(selected, button) {
     : `❌ Not quite. Answer: ${quiz.answer.word}. Synonyms: ${cleanSynonyms(quiz.answer)}. Antonyms: ${cleanAntonyms(quiz.answer)}.`;
 }
 
+function makeMatchRound() {
+  const words = gameWords();
+  const answer = randomItem(words);
+  const target = randomItem(answer.synonyms);
+  const distractors = shuffle(
+    allWords
+      .filter((word) => wordId(word) !== wordId(answer))
+      .flatMap((word) => word.synonyms)
+      .filter((synonym) => synonym !== target)
+  ).slice(0, 5);
+  state.currentMatch = {
+    answer,
+    target,
+    options: shuffle([target, ...distractors]),
+    answered: false,
+  };
+  renderMatch();
+}
+
+function renderMatch() {
+  const round = state.currentMatch;
+  els.matchMeta.textContent = `${round.answer.source} - World ${round.answer.set}`;
+  els.matchWord.textContent = round.answer.word;
+  els.matchPrompt.textContent = "Pick the matching synonym.";
+  els.matchFeedback.textContent = "";
+  els.matchOptions.innerHTML = "";
+  round.options.forEach((option) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = option;
+    button.addEventListener("click", () => answerMatch(option, button));
+    els.matchOptions.append(button);
+  });
+}
+
+function answerMatch(choice, button) {
+  const round = state.currentMatch;
+  if (round.answered) return;
+  round.answered = true;
+  const correct = choice === round.target;
+  button.classList.add(correct ? "correct" : "wrong");
+  [...els.matchOptions.children].forEach((optionButton) => {
+    if (optionButton.textContent === round.target) {
+      optionButton.classList.add("correct");
+      optionButton.textContent = `✅ ${round.target}`;
+    }
+    optionButton.disabled = true;
+  });
+  if (!correct) button.textContent = `❌ ${choice}`;
+  setStatus(round.answer, correct ? "mastered" : "missed");
+  els.matchFeedback.textContent = correct
+    ? `✅ Match made. ${round.answer.word} means ${cleanSynonyms(round.answer)}.`
+    : `❌ The best match was ${round.target}.`;
+}
+
+function makeSortRound() {
+  const words = gameWords(true);
+  const answer = randomItem(words);
+  const kind = Math.random() > 0.5 ? "antonym" : "synonym";
+  const clue = randomItem(kind === "antonym" ? antonymsFor(answer) : answer.synonyms);
+  state.currentSort = { answer, kind, clue, answered: false };
+  renderSort();
+}
+
+function renderSort() {
+  const round = state.currentSort;
+  els.sortMeta.textContent = `${round.answer.source} - World ${round.answer.set}`;
+  els.sortWord.textContent = round.answer.word;
+  els.sortClue.textContent = round.clue;
+  els.sortFeedback.textContent = "";
+  [els.sortSynonym, els.sortAntonym].forEach((button) => {
+    button.disabled = false;
+    button.classList.remove("correct", "wrong");
+  });
+}
+
+function answerSort(choice) {
+  const round = state.currentSort;
+  if (round.answered) return;
+  round.answered = true;
+  const correct = choice === round.kind;
+  const picked = choice === "synonym" ? els.sortSynonym : els.sortAntonym;
+  const right = round.kind === "synonym" ? els.sortSynonym : els.sortAntonym;
+  picked.classList.add(correct ? "correct" : "wrong");
+  right.classList.add("correct");
+  els.sortSynonym.disabled = true;
+  els.sortAntonym.disabled = true;
+  setStatus(round.answer, correct ? "mastered" : "missed");
+  els.sortFeedback.textContent = correct
+    ? `✅ Sorted. ${round.clue} is a ${round.kind} for ${round.answer.word}.`
+    : `❌ ${round.clue} is a ${round.kind} for ${round.answer.word}.`;
+}
+
+function scrambleLetters(word) {
+  const letters = word.toUpperCase().replace(/[^A-Z]/g, "").split("");
+  let scrambled = shuffle(letters);
+  if (scrambled.join("") === letters.join("") && letters.length > 1) {
+    scrambled = [...scrambled.slice(1), scrambled[0]];
+  }
+  return scrambled.map((letter, index) => ({ letter, index, used: false }));
+}
+
+function makeScrambleRound() {
+  const words = gameWords().filter((word) => word.word.replace(/[^a-z]/gi, "").length <= 12);
+  const answer = randomItem(words.length ? words : allWords);
+  state.currentScramble = {
+    answer,
+    letters: scrambleLetters(answer.word),
+    picked: [],
+    answered: false,
+  };
+  els.scrambleFeedback.textContent = "";
+  renderScramble();
+}
+
+function renderScramble() {
+  const round = state.currentScramble;
+  els.scrambleMeta.textContent = `${round.answer.source} - World ${round.answer.set}`;
+  els.scrambleClue.textContent = `Unscramble: ${round.answer.synonyms[0]}, ${round.answer.synonyms[1]}`;
+  els.scrambleAnswer.innerHTML = "";
+  const cleanAnswer = round.answer.word.toUpperCase().replace(/[^A-Z]/g, "");
+  cleanAnswer.split("").forEach((_, index) => {
+    const slot = document.createElement("button");
+    slot.type = "button";
+    slot.className = "slot";
+    slot.textContent = round.picked[index]?.letter || "";
+    slot.addEventListener("click", () => removeScrambleLetter(index));
+    els.scrambleAnswer.append(slot);
+  });
+  els.scrambleLetters.innerHTML = "";
+  round.letters.forEach((tile) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = tile.letter;
+    button.disabled = tile.used || round.answered;
+    button.addEventListener("click", () => pickScrambleLetter(tile.index));
+    els.scrambleLetters.append(button);
+  });
+}
+
+function pickScrambleLetter(index) {
+  const round = state.currentScramble;
+  const tile = round.letters.find((item) => item.index === index);
+  if (!tile || tile.used || round.answered) return;
+  tile.used = true;
+  round.picked.push(tile);
+  renderScramble();
+  checkScrambleIfComplete();
+}
+
+function removeScrambleLetter(slotIndex) {
+  const round = state.currentScramble;
+  if (round.answered || !round.picked[slotIndex]) return;
+  round.picked[slotIndex].used = false;
+  round.picked.splice(slotIndex, 1);
+  renderScramble();
+}
+
+function clearScramble() {
+  const round = state.currentScramble;
+  round.letters.forEach((tile) => (tile.used = false));
+  round.picked = [];
+  round.answered = false;
+  els.scrambleFeedback.textContent = "";
+  renderScramble();
+}
+
+function checkScrambleIfComplete() {
+  const round = state.currentScramble;
+  const answer = round.answer.word.toUpperCase().replace(/[^A-Z]/g, "");
+  const guess = round.picked.map((tile) => tile.letter).join("");
+  if (guess.length !== answer.length) return;
+  round.answered = true;
+  const correct = guess === answer;
+  setStatus(round.answer, correct ? "mastered" : "missed");
+  els.scrambleFeedback.textContent = correct
+    ? `✅ Solved. ${round.answer.word}: ${cleanSynonyms(round.answer)}.`
+    : `❌ Answer: ${round.answer.word}. Tap New Scramble to try another.`;
+  renderScramble();
+}
+
 function renderList() {
   const term = els.searchWords.value.trim().toLowerCase();
   const words = scopedWords().filter((word) => {
@@ -377,6 +594,9 @@ function switchMode(mode) {
   if (mode === "flashcards") renderFlashcard();
   if (mode === "quiz") makeQuizQuestion("synonym");
   if (mode === "opposites") makeQuizQuestion("antonym");
+  if (mode === "match") makeMatchRound();
+  if (mode === "sort") makeSortRound();
+  if (mode === "scramble") makeScrambleRound();
   if (mode === "list") renderList();
 }
 
@@ -432,6 +652,12 @@ function setup() {
     els.nextCard.click();
   });
   els.nextQuiz.addEventListener("click", () => makeQuizQuestion());
+  els.nextMatch.addEventListener("click", makeMatchRound);
+  els.sortSynonym.addEventListener("click", () => answerSort("synonym"));
+  els.sortAntonym.addEventListener("click", () => answerSort("antonym"));
+  els.nextSort.addEventListener("click", makeSortRound);
+  els.clearScramble.addEventListener("click", clearScramble);
+  els.nextScramble.addEventListener("click", makeScrambleRound);
   els.searchWords.addEventListener("input", renderList);
   els.resetProgress.addEventListener("click", () => {
     state.progress = { mastered: [], missed: [], streak: 0 };
