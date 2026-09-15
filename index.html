@@ -9,9 +9,9 @@
   <body>
     <header class="topbar">
       <div>
-        <p class="eyebrow">380-word challenge</p>
+        <p class="eyebrow">400-word challenge</p>
         <h1>Word Quest</h1>
-        <p class="tagline">Level up HSPT, ISEE, and SSAT vocab in quick rounds.</p>
+        <p class="tagline">Level up starter, HSPT, ISEE, and SSAT vocab in quick rounds.</p>
       </div>
       <div class="stats" aria-label="Study progress">
         <span><small>XP</small><strong id="masteredCount">0</strong></span>
@@ -61,7 +61,7 @@
         <div class="progress-strip">
           <div>
             <span id="scopeLabel">All sets</span>
-            <strong id="scopeCount">380 words</strong>
+            <strong id="scopeCount">400 words</strong>
             <em id="rankLabel">Rookie Rank</em>
           </div>
           <div class="bar" aria-hidden="true"><span id="progressBar"></span></div>
@@ -72,7 +72,7 @@
             <article id="flashcard" class="flashcard" tabindex="0">
               <p id="cardSet" class="card-meta">Set 1</p>
               <h2 id="cardWord">Word</h2>
-              <p id="cardPrompt">Tap to reveal synonyms</p>
+              <p id="cardPrompt">Tap to reveal clues</p>
               <div id="cardAnswer" class="card-answer" hidden></div>
             </article>
           </div>
@@ -117,7 +117,7 @@
 
         <section id="listPanel" class="panel">
           <div class="word-list-head">
-            <input id="searchWords" type="search" placeholder="Search words or synonyms">
+            <input id="searchWords" type="search" placeholder="Search words, synonyms, or antonyms">
             <span id="listCount"></span>
           </div>
           <div id="wordList" class="word-list"></div>
@@ -127,6 +127,7 @@
 
     <script src="data/vocabulary.js"></script>
     <script src="data/exam-vocabulary.js"></script>
+    <script src="data/simple-vocabulary.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

@@ -342,8 +342,18 @@ h1 {
 }
 
 .card-answer strong {
+  display: block;
   color: var(--yellow);
   font-size: 1.2rem;
+}
+
+.card-answer span,
+.word-item p span {
+  display: block;
+  color: var(--cyan);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
 .card-answer p,

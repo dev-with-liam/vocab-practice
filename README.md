@@ -1,16 +1,17 @@
-# HSPT Vocab Practice
+# Word Quest
 
-A static GitHub Pages app for practicing 380 entrance-exam vocabulary words.
+A static GitHub Pages app for practicing 400 vocabulary words.
 
 ## Features
 
-- Flashcards by world or across all 380 words
-- Multiple-choice synonym quiz
-- Typed answer practice from synonym prompts
+- Flashcards by world or across all 400 words
+- Multiple-choice synonym and antonym quiz
+- Typed answer practice from simple clue prompts
 - Searchable word list
 - Local progress tracking with mastered, missed, and streak counts
 - No build step and no runtime dependencies
-- Includes 200 HSPT workbook words, 80 ISEE practice words, and 100 SSAT high-school prep words
+- Includes 20 starter words, 200 HSPT workbook words, 80 ISEE practice words, and 100 SSAT high-school prep words
+- Uses short middle-school themed sentences in the app
 
 ## Run Locally
 

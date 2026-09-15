@@ -1,6 +1,101 @@
 const workbookWords = window.VOCABULARY_WORDS.map((word) => ({ source: "HSPT", ...word }));
-const allWords = [...workbookWords, ...(window.EXAM_VOCABULARY_WORDS || [])];
+const allWords = [...(window.SIMPLE_VOCABULARY_WORDS || []), ...workbookWords, ...(window.EXAM_VOCABULARY_WORDS || [])];
 const sets = [...new Set(allWords.map((word) => word.set))].sort((a, b) => a - b);
+
+const antonymHints = {
+  abundant: ["scarce", "limited", "lacking"],
+  agree: ["disagree", "oppose", "argue"],
+  alert: ["careless", "sleepy", "unaware"],
+  angry: ["calm", "pleased", "happy"],
+  anxious: ["calm", "confident", "relaxed"],
+  attack: ["defend", "protect", "support"],
+  beautiful: ["ugly", "plain", "unattractive"],
+  believable: ["unlikely", "false", "doubtful"],
+  bold: ["timid", "shy", "careful"],
+  brief: ["long", "lengthy", "extended"],
+  burdensome: ["easy", "light", "simple"],
+  calm: ["upset", "nervous", "wild"],
+  careful: ["careless", "reckless", "rushed"],
+  cautious: ["careless", "reckless", "bold"],
+  clear: ["unclear", "confusing", "vague"],
+  clever: ["foolish", "dull", "unwise"],
+  close: ["distant", "far", "separate"],
+  clumsy: ["skillful", "graceful", "capable"],
+  common: ["rare", "unusual", "special"],
+  complex: ["simple", "easy", "plain"],
+  confirm: ["deny", "disprove", "reject"],
+  confuse: ["clarify", "explain", "simplify"],
+  constant: ["rare", "occasional", "sporadic"],
+  criticize: ["praise", "compliment", "approve"],
+  curious: ["uninterested", "bored", "indifferent"],
+  decrease: ["increase", "grow", "expand"],
+  deep: ["shallow", "minor", "surface"],
+  different: ["same", "similar", "alike"],
+  difficult: ["easy", "simple", "effortless"],
+  dishonest: ["honest", "truthful", "fair"],
+  distant: ["near", "friendly", "close"],
+  dull: ["bright", "sharp", "exciting"],
+  eager: ["reluctant", "unwilling", "bored"],
+  easy: ["difficult", "hard", "challenging"],
+  empty: ["full", "filled", "crowded"],
+  enormous: ["tiny", "small", "minor"],
+  essential: ["unneeded", "extra", "optional"],
+  excellent: ["poor", "bad", "weak"],
+  fake: ["real", "genuine", "true"],
+  fair: ["unfair", "biased", "unequal"],
+  false: ["true", "real", "genuine"],
+  fast: ["slow", "late", "sluggish"],
+  fearful: ["brave", "bold", "confident"],
+  flexible: ["stiff", "rigid", "fixed"],
+  foolish: ["wise", "sensible", "smart"],
+  force: ["allow", "free", "release"],
+  friendly: ["unfriendly", "mean", "hostile"],
+  generous: ["selfish", "stingy", "greedy"],
+  gloomy: ["cheerful", "bright", "happy"],
+  hardworking: ["lazy", "idle", "sluggish"],
+  harmful: ["helpful", "safe", "healthy"],
+  harsh: ["gentle", "kind", "mild"],
+  honest: ["dishonest", "false", "unfair"],
+  hostile: ["friendly", "kind", "peaceful"],
+  improve: ["worsen", "damage", "weaken"],
+  inactive: ["active", "busy", "moving"],
+  joyful: ["sad", "gloomy", "upset"],
+  kind: ["mean", "cruel", "unkind"],
+  lazy: ["active", "busy", "hardworking"],
+  loud: ["quiet", "silent", "soft"],
+  minor: ["major", "important", "serious"],
+  mystery: ["answer", "solution", "explanation"],
+  nearby: ["far", "distant", "remote"],
+  new: ["old", "used", "familiar"],
+  noisy: ["quiet", "silent", "calm"],
+  old: ["new", "modern", "fresh"],
+  plain: ["fancy", "decorated", "ornate"],
+  praise: ["criticize", "blame", "scold"],
+  practical: ["unrealistic", "impractical", "foolish"],
+  quick: ["slow", "late", "delayed"],
+  quiet: ["loud", "noisy", "talkative"],
+  real: ["fake", "false", "imaginary"],
+  respectful: ["rude", "disrespectful", "impolite"],
+  risky: ["safe", "secure", "certain"],
+  rude: ["polite", "respectful", "kind"],
+  sad: ["happy", "cheerful", "joyful"],
+  scarce: ["abundant", "plentiful", "ample"],
+  secret: ["open", "public", "known"],
+  serious: ["silly", "playful", "frivolous"],
+  short: ["long", "lengthy", "tall"],
+  simple: ["difficult", "complex", "complicated"],
+  skilled: ["unskilled", "inept", "clumsy"],
+  slow: ["quick", "fast", "rapid"],
+  smart: ["foolish", "unwise", "dull"],
+  strong: ["weak", "fragile", "feeble"],
+  sure: ["uncertain", "doubtful", "unsure"],
+  tough: ["weak", "easy", "fragile"],
+  true: ["false", "fake", "untrue"],
+  unclear: ["clear", "plain", "obvious"],
+  unusual: ["common", "normal", "ordinary"],
+  weak: ["strong", "powerful", "sturdy"],
+  wise: ["foolish", "careless", "unwise"],
+};
 
 const state = {
   set: "all",
@@ -114,20 +209,46 @@ function cleanSynonyms(word) {
   return word.synonyms.join(", ");
 }
 
+function antonymsFor(word) {
+  if (word.antonyms) return word.antonyms;
+  const matches = word.synonyms.flatMap((synonym) => antonymHints[synonym.toLowerCase()] || []);
+  const unique = [...new Set(matches)];
+  if (unique.length >= 3) return unique.slice(0, 3);
+  if (unique.length > 0) return unique;
+  return ["opposite meaning", "contrast", "reverse idea"];
+}
+
+function cleanAntonyms(word) {
+  return antonymsFor(word).join(", ");
+}
+
+function simpleSentence(word) {
+  if (word.source === "STARTER") return word.example;
+  const lower = word.word.toLowerCase();
+  if (word.partOfSpeech === "v") {
+    return `During class, the group tried to ${lower} the problem before the bell rang.`;
+  }
+  if (word.partOfSpeech === "n") {
+    return `At lunch, Maya heard a simple example of ${lower}.`;
+  }
+  return `In middle school, Jordan noticed something ${lower} during the project.`;
+}
+
 function setSource(set) {
   return allWords.find((word) => word.set === Number(set))?.source || "HSPT";
 }
 
 function setLabel(set) {
   const source = setSource(set);
+  if (source === "STARTER") return "Basic";
   return `${source[0]}${set}`;
 }
 
 function rankName(mastered) {
-  if (mastered >= 340) return "Legend Rank";
-  if (mastered >= 260) return "Elite Rank";
-  if (mastered >= 180) return "Pro Rank";
-  if (mastered >= 100) return "Challenger Rank";
+  if (mastered >= 360) return "Legend Rank";
+  if (mastered >= 280) return "Elite Rank";
+  if (mastered >= 200) return "Pro Rank";
+  if (mastered >= 120) return "Challenger Rank";
   if (mastered >= 40) return "Rising Rank";
   return "Rookie Rank";
 }
@@ -163,9 +284,13 @@ function renderFlashcard() {
   const word = currentWord();
   els.cardSet.textContent = `${word.source} - World ${word.set} - ${word.partOfSpeech}`;
   els.cardWord.textContent = word.word;
-  els.cardPrompt.textContent = state.revealed ? word.example : "Tap to reveal synonyms";
+  els.cardPrompt.textContent = state.revealed ? simpleSentence(word) : "Tap to reveal clues";
   els.cardAnswer.hidden = !state.revealed;
-  els.cardAnswer.innerHTML = `<strong>${cleanSynonyms(word)}</strong><p>${word.example}</p>`;
+  els.cardAnswer.innerHTML = `
+    <p><span>Synonyms</span><strong>${cleanSynonyms(word)}</strong></p>
+    <p><span>Antonyms</span><strong>${cleanAntonyms(word)}</strong></p>
+    <p>${simpleSentence(word)}</p>
+  `;
   els.flipCard.textContent = state.revealed ? "Hide" : "Reveal";
   els.flashcard.classList.toggle("revealed", state.revealed);
 }
@@ -179,6 +304,7 @@ function makeQuizQuestion() {
     answer,
     options: shuffle([answer, ...distractors]),
     answered: false,
+    kind: Math.random() > 0.5 ? "antonym" : "synonym",
   };
   renderQuiz();
 }
@@ -186,7 +312,10 @@ function makeQuizQuestion() {
 function renderQuiz() {
   const quiz = state.currentQuiz;
   els.quizMeta.textContent = `${quiz.answer.source} - World ${quiz.answer.set} - ${quiz.answer.partOfSpeech}`;
-  els.quizQuestion.textContent = `Which word means "${quiz.answer.synonyms[0]}"?`;
+  els.quizQuestion.textContent =
+    quiz.kind === "antonym"
+      ? `Which word is the opposite of "${antonymsFor(quiz.answer)[0]}"?`
+      : `Which word means "${quiz.answer.synonyms[0]}"?`;
   els.quizOptions.innerHTML = "";
   quiz.options.forEach((option) => {
     const button = document.createElement("button");
@@ -204,14 +333,18 @@ function answerQuiz(selected, button) {
   quiz.answered = true;
   const correct = wordId(selected) === wordId(quiz.answer);
   button.classList.add(correct ? "correct" : "wrong");
+  if (!correct) button.textContent = `❌ ${selected.word}`;
   [...els.quizOptions.children].forEach((optionButton) => {
-    if (optionButton.textContent === quiz.answer.word) optionButton.classList.add("correct");
+    if (optionButton.textContent === quiz.answer.word) {
+      optionButton.classList.add("correct");
+      optionButton.textContent = `✅ ${quiz.answer.word}`;
+    }
     optionButton.disabled = true;
   });
   setStatus(quiz.answer, correct ? "mastered" : "missed");
   els.quizFeedback.textContent = correct
-    ? `Hit. Combo x${state.progress.streak}. ${quiz.answer.word}: ${cleanSynonyms(quiz.answer)}.`
-    : `Round lost. Answer: ${quiz.answer.word}. ${cleanSynonyms(quiz.answer)}.`;
+    ? `✅ Correct! Combo x${state.progress.streak}. ${quiz.answer.word}: ${cleanSynonyms(quiz.answer)}. Opposite: ${cleanAntonyms(quiz.answer)}.`
+    : `❌ Not quite. Answer: ${quiz.answer.word}. Synonyms: ${cleanSynonyms(quiz.answer)}. Antonyms: ${cleanAntonyms(quiz.answer)}.`;
 }
 
 function makeTypeQuestion() {
@@ -220,7 +353,7 @@ function makeTypeQuestion() {
   const word = state.currentType;
   els.typeMeta.textContent = `${word.source} - World ${word.set} - ${word.partOfSpeech}`;
   els.typePrompt.textContent = `Speed round: ${cleanSynonyms(word)}`;
-  els.typeSentence.textContent = word.example.replace(new RegExp(word.word, "ig"), "_____");
+  els.typeSentence.textContent = simpleSentence(word).replace(new RegExp(word.word, "ig"), "_____");
   els.typeAnswer.value = "";
   els.typeFeedback.textContent = "";
   els.typeAnswer.focus();
@@ -233,7 +366,7 @@ function normalize(value) {
 function renderList() {
   const term = els.searchWords.value.trim().toLowerCase();
   const words = scopedWords().filter((word) => {
-    const haystack = `${word.word} ${word.synonyms.join(" ")} ${word.example}`.toLowerCase();
+    const haystack = `${word.word} ${word.synonyms.join(" ")} ${antonymsFor(word).join(" ")} ${simpleSentence(word)}`.toLowerCase();
     return haystack.includes(term);
   });
   els.listCount.textContent = `${words.length} shown`;
@@ -245,8 +378,9 @@ function renderList() {
     item.innerHTML = `
       <span class="badge">${word.source} - World ${word.set} - ${status}</span>
       <h3>${word.word} <small>(${word.partOfSpeech})</small></h3>
-      <p><strong>${cleanSynonyms(word)}</strong></p>
-      <p>${word.example}</p>
+      <p><span>Synonyms</span><strong>${cleanSynonyms(word)}</strong></p>
+      <p><span>Antonyms</span><strong>${cleanAntonyms(word)}</strong></p>
+      <p>${simpleSentence(word)}</p>
     `;
     els.wordList.append(item);
   });
@@ -320,8 +454,8 @@ function setup() {
     const correct = normalize(els.typeAnswer.value) === normalize(word.word);
     setStatus(word, correct ? "mastered" : "missed");
     els.typeFeedback.textContent = correct
-      ? `Locked in. Combo x${state.progress.streak}.`
-      : `Close one. The word was ${word.word}.`;
+      ? `✅ Correct! Combo x${state.progress.streak}.`
+      : `❌ Not quite. The word was ${word.word}. Opposite: ${cleanAntonyms(word)}.`;
   });
   els.nextType.addEventListener("click", makeTypeQuestion);
   els.searchWords.addEventListener("input", renderList);
