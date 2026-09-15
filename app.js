@@ -435,7 +435,7 @@ function setup() {
     const payload = JSON.stringify(state.progress, null, 2);
     await navigator.clipboard.writeText(payload);
     els.exportProgress.textContent = "Copied";
-    setTimeout(() => (els.exportProgress.textContent = "Export"), 1200);
+    setTimeout(() => (els.exportProgress.textContent = "Copy"), 1200);
   });
 
   refreshScope();
