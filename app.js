@@ -18,6 +18,7 @@ const els = {
   streakCount: document.querySelector("#streakCount"),
   scopeLabel: document.querySelector("#scopeLabel"),
   scopeCount: document.querySelector("#scopeCount"),
+  rankLabel: document.querySelector("#rankLabel"),
   progressBar: document.querySelector("#progressBar"),
   missedOnly: document.querySelector("#missedOnly"),
   shuffleCards: document.querySelector("#shuffleCards"),
@@ -111,6 +112,15 @@ function cleanSynonyms(word) {
   return word.synonyms.join(", ");
 }
 
+function rankName(mastered) {
+  if (mastered >= 180) return "Legend Rank";
+  if (mastered >= 140) return "Elite Rank";
+  if (mastered >= 100) return "Pro Rank";
+  if (mastered >= 60) return "Challenger Rank";
+  if (mastered >= 25) return "Rising Rank";
+  return "Rookie Rank";
+}
+
 function setStatus(word, status) {
   const id = wordId(word);
   state.progress.mastered = state.progress.mastered.filter((item) => item !== id);
@@ -134,6 +144,7 @@ function renderStats() {
   els.streakCount.textContent = String(state.progress.streak);
   els.scopeLabel.textContent = state.set === "all" ? "All sets" : `Set ${state.set}`;
   els.scopeCount.textContent = `${scoped.length} word${scoped.length === 1 ? "" : "s"}`;
+  els.rankLabel.textContent = rankName(state.progress.mastered.length);
   els.progressBar.style.width = scoped.length ? `${Math.round((mastered / scoped.length) * 100)}%` : "0%";
 }
 
@@ -145,6 +156,7 @@ function renderFlashcard() {
   els.cardAnswer.hidden = !state.revealed;
   els.cardAnswer.innerHTML = `<strong>${cleanSynonyms(word)}</strong><p>${word.example}</p>`;
   els.flipCard.textContent = state.revealed ? "Hide" : "Reveal";
+  els.flashcard.classList.toggle("revealed", state.revealed);
 }
 
 function makeQuizQuestion() {
@@ -187,8 +199,8 @@ function answerQuiz(selected, button) {
   });
   setStatus(quiz.answer, correct ? "mastered" : "missed");
   els.quizFeedback.textContent = correct
-    ? `Correct. ${quiz.answer.word}: ${cleanSynonyms(quiz.answer)}.`
-    : `Answer: ${quiz.answer.word}. ${cleanSynonyms(quiz.answer)}.`;
+    ? `Hit. Combo x${state.progress.streak}. ${quiz.answer.word}: ${cleanSynonyms(quiz.answer)}.`
+    : `Round lost. Answer: ${quiz.answer.word}. ${cleanSynonyms(quiz.answer)}.`;
 }
 
 function makeTypeQuestion() {
@@ -196,7 +208,7 @@ function makeTypeQuestion() {
   state.currentType = words[Math.floor(Math.random() * words.length)] || allWords[0];
   const word = state.currentType;
   els.typeMeta.textContent = `Set ${word.set} · ${word.partOfSpeech}`;
-  els.typePrompt.textContent = `Type the word for: ${cleanSynonyms(word)}`;
+  els.typePrompt.textContent = `Speed round: ${cleanSynonyms(word)}`;
   els.typeSentence.textContent = word.example.replace(new RegExp(word.word, "ig"), "_____");
   els.typeAnswer.value = "";
   els.typeFeedback.textContent = "";
@@ -296,8 +308,8 @@ function setup() {
     const correct = normalize(els.typeAnswer.value) === normalize(word.word);
     setStatus(word, correct ? "mastered" : "missed");
     els.typeFeedback.textContent = correct
-      ? `Correct. ${word.word}: ${cleanSynonyms(word)}.`
-      : `Answer: ${word.word}. ${cleanSynonyms(word)}.`;
+      ? `Locked in. Combo x${state.progress.streak}.`
+      : `Close one. The word was ${word.word}.`;
   });
   els.nextType.addEventListener("click", makeTypeQuestion);
   els.searchWords.addEventListener("input", renderList);
