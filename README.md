@@ -1,15 +1,16 @@
 # HSPT Vocab Practice
 
-A static GitHub Pages app for practicing the 200 words from `Vocabulary-Workbook (1).pdf`.
+A static GitHub Pages app for practicing 380 entrance-exam vocabulary words.
 
 ## Features
 
-- Flashcards by set or across all 200 words
+- Flashcards by world or across all 380 words
 - Multiple-choice synonym quiz
 - Typed answer practice from synonym prompts
 - Searchable word list
 - Local progress tracking with mastered, missed, and streak counts
 - No build step and no runtime dependencies
+- Includes 200 HSPT workbook words, 80 ISEE practice words, and 100 SSAT high-school prep words
 
 ## Run Locally
 
@@ -31,7 +32,7 @@ Then visit `http://localhost:8000`.
 
 ## Regenerate Vocabulary Data
 
-The generated app data lives in `data/vocabulary.js`. To regenerate it from the PDF:
+The generated HSPT workbook data lives in `data/vocabulary.js`. To regenerate it from the PDF:
 
 ```bash
 python3 scripts/extract-vocab.py "/Users/liamsood/Downloads/Vocabulary-Workbook (1).pdf" data/vocabulary.js

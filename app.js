@@ -1,4 +1,6 @@
-const allWords = window.VOCABULARY_WORDS;
+const workbookWords = window.VOCABULARY_WORDS.map((word) => ({ source: "HSPT", ...word }));
+const allWords = [...workbookWords, ...(window.EXAM_VOCABULARY_WORDS || [])];
+const sets = [...new Set(allWords.map((word) => word.set))].sort((a, b) => a - b);
 
 const state = {
   set: "all",
@@ -112,12 +114,21 @@ function cleanSynonyms(word) {
   return word.synonyms.join(", ");
 }
 
+function setSource(set) {
+  return allWords.find((word) => word.set === Number(set))?.source || "HSPT";
+}
+
+function setLabel(set) {
+  const source = setSource(set);
+  return `${source[0]}${set}`;
+}
+
 function rankName(mastered) {
-  if (mastered >= 180) return "Legend Rank";
-  if (mastered >= 140) return "Elite Rank";
-  if (mastered >= 100) return "Pro Rank";
-  if (mastered >= 60) return "Challenger Rank";
-  if (mastered >= 25) return "Rising Rank";
+  if (mastered >= 340) return "Legend Rank";
+  if (mastered >= 260) return "Elite Rank";
+  if (mastered >= 180) return "Pro Rank";
+  if (mastered >= 100) return "Challenger Rank";
+  if (mastered >= 40) return "Rising Rank";
   return "Rookie Rank";
 }
 
@@ -142,7 +153,7 @@ function renderStats() {
   const mastered = scoped.filter((word) => state.progress.mastered.includes(wordId(word))).length;
   els.masteredCount.textContent = String(state.progress.mastered.length);
   els.streakCount.textContent = String(state.progress.streak);
-  els.scopeLabel.textContent = state.set === "all" ? "All sets" : `Set ${state.set}`;
+  els.scopeLabel.textContent = state.set === "all" ? "All exams" : `${setSource(state.set)} World ${state.set}`;
   els.scopeCount.textContent = `${scoped.length} word${scoped.length === 1 ? "" : "s"}`;
   els.rankLabel.textContent = rankName(state.progress.mastered.length);
   els.progressBar.style.width = scoped.length ? `${Math.round((mastered / scoped.length) * 100)}%` : "0%";
@@ -150,7 +161,7 @@ function renderStats() {
 
 function renderFlashcard() {
   const word = currentWord();
-  els.cardSet.textContent = `Set ${word.set} · ${word.partOfSpeech}`;
+  els.cardSet.textContent = `${word.source} - World ${word.set} - ${word.partOfSpeech}`;
   els.cardWord.textContent = word.word;
   els.cardPrompt.textContent = state.revealed ? word.example : "Tap to reveal synonyms";
   els.cardAnswer.hidden = !state.revealed;
@@ -174,7 +185,7 @@ function makeQuizQuestion() {
 
 function renderQuiz() {
   const quiz = state.currentQuiz;
-  els.quizMeta.textContent = `Set ${quiz.answer.set} · ${quiz.answer.partOfSpeech}`;
+  els.quizMeta.textContent = `${quiz.answer.source} - World ${quiz.answer.set} - ${quiz.answer.partOfSpeech}`;
   els.quizQuestion.textContent = `Which word means "${quiz.answer.synonyms[0]}"?`;
   els.quizOptions.innerHTML = "";
   quiz.options.forEach((option) => {
@@ -207,7 +218,7 @@ function makeTypeQuestion() {
   const words = scopedWords();
   state.currentType = words[Math.floor(Math.random() * words.length)] || allWords[0];
   const word = state.currentType;
-  els.typeMeta.textContent = `Set ${word.set} · ${word.partOfSpeech}`;
+  els.typeMeta.textContent = `${word.source} - World ${word.set} - ${word.partOfSpeech}`;
   els.typePrompt.textContent = `Speed round: ${cleanSynonyms(word)}`;
   els.typeSentence.textContent = word.example.replace(new RegExp(word.word, "ig"), "_____");
   els.typeAnswer.value = "";
@@ -232,7 +243,7 @@ function renderList() {
     item.className = "word-item";
     const status = state.progress.mastered.includes(wordId(word)) ? "Mastered" : state.progress.missed.includes(wordId(word)) ? "Missed" : "New";
     item.innerHTML = `
-      <span class="badge">Set ${word.set} · ${status}</span>
+      <span class="badge">${word.source} - World ${word.set} - ${status}</span>
       <h3>${word.word} <small>(${word.partOfSpeech})</small></h3>
       <p><strong>${cleanSynonyms(word)}</strong></p>
       <p>${word.example}</p>
@@ -258,10 +269,11 @@ function refreshScope() {
 }
 
 function setup() {
-  ["all", ...Array.from({ length: 10 }, (_, index) => String(index + 1))].forEach((set) => {
+  ["all", ...sets.map(String)].forEach((set) => {
     const button = document.createElement("button");
     button.type = "button";
-    button.textContent = set === "all" ? "All" : set;
+    button.textContent = set === "all" ? "All" : setLabel(set);
+    if (set !== "all") button.title = `${setSource(set)} World ${set}`;
     button.classList.toggle("active", set === state.set);
     button.addEventListener("click", () => {
       state.set = set;
