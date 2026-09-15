@@ -6,7 +6,7 @@ A static GitHub Pages app for practicing 400 vocabulary words.
 
 - Flashcards by world or across all 400 words
 - Multiple-choice synonym and antonym quiz
-- Typed answer practice from simple clue prompts
+- Separate synonym and opposite multiple-choice practice
 - Searchable word list
 - Local progress tracking with mastered, missed, and streak counts
 - No build step and no runtime dependencies

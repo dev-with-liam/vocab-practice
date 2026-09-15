@@ -104,7 +104,6 @@ const state = {
   index: 0,
   revealed: false,
   currentQuiz: null,
-  currentType: null,
   progress: loadProgress(),
 };
 
@@ -122,7 +121,6 @@ const els = {
   panels: {
     flashcards: document.querySelector("#flashcardsPanel"),
     quiz: document.querySelector("#quizPanel"),
-    type: document.querySelector("#typePanel"),
     list: document.querySelector("#listPanel"),
   },
   flashcard: document.querySelector("#flashcard"),
@@ -140,13 +138,6 @@ const els = {
   quizOptions: document.querySelector("#quizOptions"),
   quizFeedback: document.querySelector("#quizFeedback"),
   nextQuiz: document.querySelector("#nextQuiz"),
-  typeMeta: document.querySelector("#typeMeta"),
-  typePrompt: document.querySelector("#typePrompt"),
-  typeSentence: document.querySelector("#typeSentence"),
-  typeForm: document.querySelector("#typeForm"),
-  typeAnswer: document.querySelector("#typeAnswer"),
-  typeFeedback: document.querySelector("#typeFeedback"),
-  nextType: document.querySelector("#nextType"),
   searchWords: document.querySelector("#searchWords"),
   listCount: document.querySelector("#listCount"),
   wordList: document.querySelector("#wordList"),
@@ -295,7 +286,7 @@ function renderFlashcard() {
   els.flashcard.classList.toggle("revealed", state.revealed);
 }
 
-function makeQuizQuestion() {
+function makeQuizQuestion(kind = state.mode === "opposites" ? "antonym" : "synonym") {
   const words = scopedWords();
   const answer = words[Math.floor(Math.random() * words.length)] || allWords[0];
   const pool = allWords.filter((word) => wordId(word) !== wordId(answer));
@@ -304,7 +295,7 @@ function makeQuizQuestion() {
     answer,
     options: shuffle([answer, ...distractors]),
     answered: false,
-    kind: Math.random() > 0.5 ? "antonym" : "synonym",
+    kind,
   };
   renderQuiz();
 }
@@ -347,22 +338,6 @@ function answerQuiz(selected, button) {
     : `❌ Not quite. Answer: ${quiz.answer.word}. Synonyms: ${cleanSynonyms(quiz.answer)}. Antonyms: ${cleanAntonyms(quiz.answer)}.`;
 }
 
-function makeTypeQuestion() {
-  const words = scopedWords();
-  state.currentType = words[Math.floor(Math.random() * words.length)] || allWords[0];
-  const word = state.currentType;
-  els.typeMeta.textContent = `${word.source} - World ${word.set} - ${word.partOfSpeech}`;
-  els.typePrompt.textContent = `Speed round: ${cleanSynonyms(word)}`;
-  els.typeSentence.textContent = simpleSentence(word).replace(new RegExp(word.word, "ig"), "_____");
-  els.typeAnswer.value = "";
-  els.typeFeedback.textContent = "";
-  els.typeAnswer.focus();
-}
-
-function normalize(value) {
-  return value.trim().toLowerCase().replace(/[^a-z]/g, "");
-}
-
 function renderList() {
   const term = els.searchWords.value.trim().toLowerCase();
   const words = scopedWords().filter((word) => {
@@ -389,10 +364,12 @@ function renderList() {
 function switchMode(mode) {
   state.mode = mode;
   els.modeButtons.forEach((button) => button.classList.toggle("active", button.dataset.mode === mode));
-  Object.entries(els.panels).forEach(([name, panel]) => panel.classList.toggle("active", name === mode));
+  Object.entries(els.panels).forEach(([name, panel]) => {
+    panel.classList.toggle("active", name === mode || (name === "quiz" && mode === "opposites"));
+  });
   if (mode === "flashcards") renderFlashcard();
-  if (mode === "quiz") makeQuizQuestion();
-  if (mode === "type") makeTypeQuestion();
+  if (mode === "quiz") makeQuizQuestion("synonym");
+  if (mode === "opposites") makeQuizQuestion("antonym");
   if (mode === "list") renderList();
 }
 
@@ -447,17 +424,7 @@ function setup() {
     setStatus(currentWord(), "mastered");
     els.nextCard.click();
   });
-  els.nextQuiz.addEventListener("click", makeQuizQuestion);
-  els.typeForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const word = state.currentType;
-    const correct = normalize(els.typeAnswer.value) === normalize(word.word);
-    setStatus(word, correct ? "mastered" : "missed");
-    els.typeFeedback.textContent = correct
-      ? `✅ Correct! Combo x${state.progress.streak}.`
-      : `❌ Not quite. The word was ${word.word}.`;
-  });
-  els.nextType.addEventListener("click", makeTypeQuestion);
+  els.nextQuiz.addEventListener("click", () => makeQuizQuestion());
   els.searchWords.addEventListener("input", renderList);
   els.resetProgress.addEventListener("click", () => {
     state.progress = { mastered: [], missed: [], streak: 0 };

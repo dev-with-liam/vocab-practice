@@ -406,14 +406,12 @@ h1 {
   font-weight: 850;
 }
 
-.type-form,
 .word-list-head {
   display: flex;
   gap: 0.65rem;
   align-items: center;
 }
 
-.type-form input,
 .word-list-head input {
   width: 100%;
   min-height: 3rem;
@@ -425,13 +423,11 @@ h1 {
   outline: none;
 }
 
-.type-form input:focus,
 .word-list-head input:focus {
   border-color: var(--cyan);
   box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.16);
 }
 
-.type-form input::placeholder,
 .word-list-head input::placeholder {
   color: #8091a3;
 }
@@ -518,13 +514,11 @@ h1 {
 
   .progress-strip,
   .options,
-  .type-form,
   .word-list-head {
     grid-template-columns: 1fr;
   }
 
   .progress-strip,
-  .type-form,
   .word-list-head {
     display: grid;
   }
