@@ -206,11 +206,16 @@ function antonymsFor(word) {
   const unique = [...new Set(matches)];
   if (unique.length >= 3) return unique.slice(0, 3);
   if (unique.length > 0) return unique;
-  return ["opposite meaning", "contrast", "reverse idea"];
+  return [];
 }
 
 function cleanAntonyms(word) {
-  return antonymsFor(word).join(", ");
+  const antonyms = antonymsFor(word);
+  return antonyms.length ? antonyms.join(", ") : "No antonym clue yet";
+}
+
+function hasAntonymClue(word) {
+  return antonymsFor(word).length > 0;
 }
 
 function simpleSentence(word) {
@@ -287,8 +292,10 @@ function renderFlashcard() {
 }
 
 function makeQuizQuestion(kind = state.mode === "opposites" ? "antonym" : "synonym") {
-  const words = scopedWords();
-  const answer = words[Math.floor(Math.random() * words.length)] || allWords[0];
+  const words = kind === "antonym" ? scopedWords().filter(hasAntonymClue) : scopedWords();
+  const fallbackWords = kind === "antonym" ? allWords.filter(hasAntonymClue) : allWords;
+  const questionWords = words.length ? words : fallbackWords;
+  const answer = questionWords[Math.floor(Math.random() * questionWords.length)] || allWords[0];
   const pool = allWords.filter((word) => wordId(word) !== wordId(answer));
   const distractors = shuffle(pool).slice(0, 3);
   state.currentQuiz = {
