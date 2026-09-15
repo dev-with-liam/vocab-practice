@@ -455,7 +455,7 @@ function setup() {
     setStatus(word, correct ? "mastered" : "missed");
     els.typeFeedback.textContent = correct
       ? `✅ Correct! Combo x${state.progress.streak}.`
-      : `❌ Not quite. The word was ${word.word}. Opposite: ${cleanAntonyms(word)}.`;
+      : `❌ Not quite. The word was ${word.word}.`;
   });
   els.nextType.addEventListener("click", makeTypeQuestion);
   els.searchWords.addEventListener("input", renderList);
