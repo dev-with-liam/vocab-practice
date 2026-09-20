@@ -1,5 +1,5 @@
 const workbookWords = window.VOCABULARY_WORDS.map((word) => ({ source: "HSPT", ...word }));
-const allWords = [...(window.SIMPLE_VOCABULARY_WORDS || []), ...workbookWords, ...(window.EXAM_VOCABULARY_WORDS || [])];
+const allWords = shuffle([...(window.SIMPLE_VOCABULARY_WORDS || []), ...workbookWords, ...(window.EXAM_VOCABULARY_WORDS || [])]);
 const sets = [...new Set(allWords.map((word) => word.set))].sort((a, b) => a - b);
 
 const antonymHints = {

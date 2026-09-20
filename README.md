@@ -37,11 +37,3 @@ Then visit `http://localhost:8000`.
 3. In GitHub, go to `Settings` -> `Pages`.
 4. Set the source to `GitHub Actions`.
 5. Push to `main`; the included workflow deploys the site.
-
-## Regenerate Vocabulary Data
-
-The generated HSPT workbook data lives in `data/vocabulary.js`. To regenerate it from the PDF:
-
-```bash
-python3 scripts/extract-vocab.py "/Users/liamsood/Downloads/Vocabulary-Workbook (1).pdf" data/vocabulary.js
-```
