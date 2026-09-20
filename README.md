@@ -2,6 +2,12 @@
 
 A static GitHub Pages app for practicing 400 vocabulary words.
 
+## GitHub Pages
+
+- GitHub repo: https://github.com/dev-with-liam/vocab-practice
+- Live app: https://dev-with-liam.github.io/vocab-practice/
+- About page: https://dev-with-liam.github.io/vocab-practice/about.html
+
 ## Features
 
 - Flashcards by world or across all 400 words
