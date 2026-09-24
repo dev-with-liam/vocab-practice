@@ -274,8 +274,14 @@ function setSource(set) {
 
 function setLabel(set) {
   const source = setSource(set);
-  if (source === "STARTER") return "Basic";
-  return `${source[0]}${set}`;
+  if (source === "STARTER") return "Starter Words";
+  if (source === "HSPT") return `HSPT Words ${set}`;
+  if (source === "HSPT PDF") return `HSPT PDF ${set}`;
+  return `${source} Words ${set}`;
+}
+
+function setMeta(word) {
+  return `${setLabel(word.set)} - ${word.partOfSpeech}`;
 }
 
 function rankName(mastered) {
@@ -308,7 +314,7 @@ function renderStats() {
   const mastered = scoped.filter((word) => state.progress.mastered.includes(wordId(word))).length;
   els.masteredCount.textContent = String(state.progress.mastered.length);
   els.streakCount.textContent = String(state.progress.streak);
-  els.scopeLabel.textContent = state.set === "all" ? "All exams" : `${setSource(state.set)} World ${state.set}`;
+  els.scopeLabel.textContent = state.set === "all" ? "All word categories" : setLabel(state.set);
   els.scopeCount.textContent = `${scoped.length} word${scoped.length === 1 ? "" : "s"}`;
   els.rankLabel.textContent = rankName(state.progress.mastered.length);
   els.progressBar.style.width = scoped.length ? `${Math.round((mastered / scoped.length) * 100)}%` : "0%";
@@ -316,7 +322,7 @@ function renderStats() {
 
 function renderFlashcard() {
   const word = currentWord();
-  els.cardSet.textContent = `${word.source} - World ${word.set} - ${word.partOfSpeech}`;
+  els.cardSet.textContent = setMeta(word);
   els.cardWord.textContent = word.word;
   els.cardPrompt.textContent = state.revealed ? simpleSentence(word) : "Tap to reveal clues";
   els.cardAnswer.hidden = !state.revealed;
@@ -347,7 +353,7 @@ function makeQuizQuestion(kind = state.mode === "opposites" ? "antonym" : "synon
 
 function renderQuiz() {
   const quiz = state.currentQuiz;
-  els.quizMeta.textContent = `${quiz.answer.source} - World ${quiz.answer.set} - ${quiz.answer.partOfSpeech}`;
+  els.quizMeta.textContent = setMeta(quiz.answer);
   els.quizQuestion.textContent =
     quiz.kind === "antonym"
       ? `Which word is the opposite of "${antonymsFor(quiz.answer)[0]}"?`
@@ -404,7 +410,7 @@ function makeMatchRound() {
 
 function renderMatch() {
   const round = state.currentMatch;
-  els.matchMeta.textContent = `${round.answer.source} - World ${round.answer.set}`;
+  els.matchMeta.textContent = setLabel(round.answer.set);
   els.matchWord.textContent = round.answer.word;
   els.matchPrompt.textContent = "Pick the matching synonym.";
   els.matchFeedback.textContent = "";
@@ -449,7 +455,7 @@ function makeSortRound() {
 
 function renderSort() {
   const round = state.currentSort;
-  els.sortMeta.textContent = `${round.answer.source} - World ${round.answer.set}`;
+  els.sortMeta.textContent = setLabel(round.answer.set);
   els.sortWord.textContent = round.answer.word;
   els.sortClue.textContent = round.clue;
   els.sortFeedback.textContent = "";
@@ -500,7 +506,7 @@ function makeScrambleRound() {
 
 function renderScramble() {
   const round = state.currentScramble;
-  els.scrambleMeta.textContent = `${round.answer.source} - World ${round.answer.set}`;
+  els.scrambleMeta.textContent = setLabel(round.answer.set);
   els.scrambleClue.textContent = `Unscramble: ${round.answer.synonyms[0]}, ${round.answer.synonyms[1]}`;
   els.scrambleAnswer.innerHTML = "";
   const cleanAnswer = round.answer.word.toUpperCase().replace(/[^A-Z]/g, "");
@@ -577,7 +583,7 @@ function renderList() {
     item.className = "word-item";
     const status = state.progress.mastered.includes(wordId(word)) ? "Mastered" : state.progress.missed.includes(wordId(word)) ? "Missed" : "New";
     item.innerHTML = `
-      <span class="badge">${word.source} - World ${word.set} - ${status}</span>
+      <span class="badge">${setLabel(word.set)} - ${status}</span>
       <h3>${word.word} <small>(${word.partOfSpeech})</small></h3>
       <p><span>Synonyms</span><strong>${cleanSynonyms(word)}</strong></p>
       <p><span>Antonyms</span><strong>${cleanAntonyms(word)}</strong></p>
@@ -612,8 +618,8 @@ function setup() {
   ["all", ...sets.map(String)].forEach((set) => {
     const button = document.createElement("button");
     button.type = "button";
-    button.textContent = set === "all" ? "All" : setLabel(set);
-    if (set !== "all") button.title = `${setSource(set)} World ${set}`;
+    button.textContent = set === "all" ? "All Categories" : setLabel(set);
+    if (set !== "all") button.title = setLabel(set);
     button.classList.toggle("active", set === state.set);
     button.addEventListener("click", () => {
       state.set = set;

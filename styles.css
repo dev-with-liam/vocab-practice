@@ -211,7 +211,7 @@ h1 {
 
 .set-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.42rem;
 }
 
@@ -219,6 +219,7 @@ h1 {
 .mode-button {
   min-height: 2.5rem;
   padding: 0.55rem;
+  line-height: 1.15;
   color: var(--ink);
   background: rgba(255, 255, 255, 0.08);
   box-shadow: none;
