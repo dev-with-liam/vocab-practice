@@ -3,6 +3,56 @@ const allWords = shuffle([...workbookWords, ...(window.EXAM_VOCABULARY_WORDS || 
 const vaultPdfWords = (window.HSPT_PDF_VOCABULARY_WORDS || []).map((word) => ({ ...word, source: "HSPT" }));
 const vaultWords = [...allWords, ...vaultPdfWords];
 const categories = ["HSPT", "ISEE", "SSAT"];
+const wordPartEntries = [
+  ["prefix", "anti", "against", ["antiperspirant", "antibody", "antithesis"]],
+  ["prefix", "bi", "two", ["bicycle", "binary", "bilingual"]],
+  ["prefix", "circum", "around", ["circumference", "circumnavigate", "circumspect"]],
+  ["prefix", "inter", "between", ["interview", "interstellar", "international"]],
+  ["prefix", "mis", "bad or wrong", ["mistake", "misfire", "misguided"]],
+  ["prefix", "mono", "one", ["monogram", "monotone", "monologue"]],
+  ["prefix", "non", "not", ["nonfiction", "nonprofit", "nonstop"]],
+  ["prefix", "post", "after", ["posttest", "postscript", "postgraduate"]],
+  ["prefix", "pre", "before", ["pretest", "preview", "predict"]],
+  ["prefix", "re", "again", ["review", "return", "rewrite"]],
+  ["prefix", "sub", "under", ["submarine", "subway", "subterranean"]],
+  ["prefix", "un", "not", ["unpleasant", "unequal", "unfit"]],
+  ["suffix", "-able", "able to be", ["readable", "portable", "teachable"]],
+  ["suffix", "-er", "one who", ["teacher", "runner", "writer"]],
+  ["suffix", "-ful", "full of", ["hopeful", "careful", "joyful"]],
+  ["suffix", "-ian", "specialist or related to", ["musician", "historian", "magician"]],
+  ["suffix", "-ible", "able to be", ["audible", "visible", "flexible"]],
+  ["suffix", "-ist", "one who practices", ["artist", "scientist", "pianist"]],
+  ["suffix", "-less", "without", ["careless", "fearless", "hopeless"]],
+  ["suffix", "-logy", "study or science of", ["biology", "geology", "mythology"]],
+  ["suffix", "-ment", "act or result", ["movement", "payment", "argument"]],
+  ["suffix", "-ness", "state of being", ["kindness", "fairness", "darkness"]],
+  ["suffix", "-ous", "full of", ["joyous", "famous", "dangerous"]],
+  ["suffix", "-tion", "act or state", ["creation", "reaction", "transition"]],
+  ["root", "aqua", "water", ["aquarium", "aquatic", "aqueduct"]],
+  ["root", "aud/audi", "hear", ["audible", "audience", "audition"]],
+  ["root", "bene", "good", ["benefit", "benevolent", "beneficial"]],
+  ["root", "bio", "life", ["biology", "biography", "biome"]],
+  ["root", "chron", "time", ["chronological", "chronic", "chronicle"]],
+  ["root", "geo", "earth", ["geography", "geology", "geothermal"]],
+  ["root", "hydr/hydro", "water", ["hydroelectric", "hydrate", "hydrogen"]],
+  ["root", "magn", "great", ["magnificent", "magnify", "magnitude"]],
+  ["root", "mal", "bad", ["malnourished", "malicious", "malfunction"]],
+  ["root", "micro", "small", ["microscopic", "microphone", "microbe"]],
+  ["root", "phon", "sound", ["microphone", "symphony", "phonics"]],
+  ["root", "photo", "light", ["photograph", "photosynthesis", "photon"]],
+  ["root", "tele", "far", ["telescope", "telephone", "television"]],
+  ["root", "therm", "heat", ["thermometer", "thermostat", "thermal"]],
+  ["stem", "duct", "to lead", ["conduct", "induct", "deduction"]],
+  ["stem", "fer", "to carry", ["transfer", "ferry", "refer"]],
+  ["stem", "pend", "to hang", ["depend", "pending", "pendulum"]],
+  ["stem", "spec", "to look or see", ["spectator", "spectacle", "inspect"]],
+  ["stem", "port", "to carry", ["transport", "portable", "import"]],
+  ["stem", "scribe", "to write", ["scribble", "describe", "transcribe"]],
+  ["stem", "vid", "to see", ["video", "evidence", "provide"]],
+  ["stem", "ject", "to throw", ["eject", "reject", "project"]],
+  ["stem", "rupt", "to break", ["erupt", "rupture", "interrupt"]],
+  ["stem", "struct", "to build", ["construct", "structure", "instruct"]],
+].map(([type, part, meaning, examples]) => ({ type, part, meaning, examples }));
 
 const antonymHints = {
   abundant: ["scarce", "limited", "lacking"],
@@ -102,22 +152,26 @@ const antonymHints = {
 const state = {
   category: "HSPT",
   mode: "flashcards",
+  theme: loadTheme(),
   order: [],
   index: 0,
   revealed: false,
   flashcardClickTimer: null,
+  partFilter: "prefix",
   sortMode: "synonym",
   currentQuiz: null,
   currentMatch: null,
   currentSort: null,
   currentScramble: null,
   currentSpeed: null,
+  currentPop: null,
   progress: loadProgress(),
 };
 
 const els = {
   setButtons: document.querySelector("#setButtons"),
   modeButtons: document.querySelectorAll(".mode-button"),
+  themeButtons: document.querySelectorAll(".theme-button"),
   masteredCount: document.querySelector("#masteredCount"),
   streakCount: document.querySelector("#streakCount"),
   scopeLabel: document.querySelector("#scopeLabel"),
@@ -133,7 +187,9 @@ const els = {
     sort: document.querySelector("#sortPanel"),
     scramble: document.querySelector("#scramblePanel"),
     speed: document.querySelector("#speedPanel"),
+    pop: document.querySelector("#popPanel"),
     list: document.querySelector("#listPanel"),
+    roots: document.querySelector("#rootsPanel"),
   },
   flashcard: document.querySelector("#flashcard"),
   quizCard: document.querySelector("#quizPanel .question-card"),
@@ -180,11 +236,21 @@ const els = {
   speedMeta: document.querySelector("#speedMeta"),
   speedScore: document.querySelector("#speedScore"),
   speedTimer: document.querySelector("#speedTimer"),
+  speedLength: document.querySelector("#speedLength"),
   speedQuestion: document.querySelector("#speedQuestion"),
   speedOptions: document.querySelector("#speedOptions"),
   speedFeedback: document.querySelector("#speedFeedback"),
   restartSpeed: document.querySelector("#restartSpeed"),
+  popMeta: document.querySelector("#popMeta"),
+  popScore: document.querySelector("#popScore"),
+  popClue: document.querySelector("#popClue"),
+  popOptions: document.querySelector("#popOptions"),
+  popFeedback: document.querySelector("#popFeedback"),
+  nextPop: document.querySelector("#nextPop"),
   vaultCategory: document.querySelector("#vaultCategory"),
+  partMeta: document.querySelector("#partMeta"),
+  rootsGrid: document.querySelector("#rootsGrid"),
+  partButtons: document.querySelectorAll(".part-mode-button"),
   searchWords: document.querySelector("#searchWords"),
   listCount: document.querySelector("#listCount"),
   wordList: document.querySelector("#wordList"),
@@ -199,6 +265,17 @@ function loadProgress() {
   } catch {
     return fallback;
   }
+}
+
+function loadTheme() {
+  return localStorage.getItem("vocab-theme") || "dark";
+}
+
+function setTheme(theme) {
+  state.theme = theme;
+  document.body.dataset.theme = theme;
+  localStorage.setItem("vocab-theme", theme);
+  els.themeButtons.forEach((button) => button.classList.toggle("active", button.dataset.theme === theme));
 }
 
 function saveProgress() {
@@ -341,6 +418,26 @@ function renderVaultStats(category, shownCount) {
   els.scopeCount.textContent = `${total} word${total === 1 ? "" : "s"}`;
   els.rankLabel.textContent = `${shownCount} shown`;
   els.progressBar.style.width = total ? `${Math.round((shownCount / total) * 100)}%` : "0%";
+}
+
+function currentWordParts() {
+  return wordPartEntries.filter((entry) => entry.type === state.partFilter);
+}
+
+function partFilterLabel(filter) {
+  if (filter === "prefix") return "Prefixes";
+  if (filter === "suffix") return "Suffixes";
+  if (filter === "root") return "Roots";
+  if (filter === "stem") return "Stems";
+  return "Word Parts";
+}
+
+function renderRootStats() {
+  const entries = currentWordParts();
+  els.scopeLabel.textContent = partFilterLabel(state.partFilter);
+  els.scopeCount.textContent = `${entries.length} card${entries.length === 1 ? "" : "s"}`;
+  els.rankLabel.textContent = "Flip Study";
+  els.progressBar.style.width = "100%";
 }
 
 function flashRefresh(element) {
@@ -697,9 +794,17 @@ function stopSpeedTimer() {
   state.currentSpeed.timerId = null;
 }
 
+function speedRoundLength() {
+  const value = Number(els.speedLength.value);
+  const max = Math.min(gameWords().length, 50);
+  return Math.max(3, Math.min(Number.isFinite(value) ? value : 10, max));
+}
+
 function startSpeedRound() {
   stopSpeedTimer();
-  const words = shuffle(gameWords()).slice(0, 10);
+  const length = speedRoundLength();
+  els.speedLength.value = String(length);
+  const words = shuffle(gameWords()).slice(0, length);
   state.currentSpeed = {
     words,
     index: 0,
@@ -736,7 +841,7 @@ function renderSpeed() {
   els.speedMeta.textContent = `${categoryLabel(answer.source)} ${answer.set} - word ${round.index + 1} of ${total}`;
   els.speedScore.textContent = `${round.score}/${total}`;
   els.speedQuestion.textContent = `Which word means "${answer.synonyms[0]}"?`;
-  els.speedFeedback.textContent = "Pick fast. Your round ends after 10 words.";
+  els.speedFeedback.textContent = `Pick fast. Your round ends after ${total} words.`;
   els.speedOptions.innerHTML = "";
   round.options.forEach((option) => {
     const button = document.createElement("button");
@@ -776,6 +881,56 @@ function answerSpeed(selected, button) {
   }, 520);
 }
 
+function makePopRound() {
+  const words = gameWords();
+  const answer = randomItem(words);
+  const pool = allWords.filter((word) => wordId(word) !== wordId(answer));
+  state.currentPop = {
+    answer,
+    clue: randomItem(answer.synonyms),
+    options: shuffle([answer, ...shuffle(pool).slice(0, 5)]),
+    answered: false,
+    score: state.currentPop?.score || 0,
+  };
+  renderPop();
+}
+
+function renderPop() {
+  const round = state.currentPop;
+  if (!round) return;
+  els.popMeta.textContent = `${categoryLabel(round.answer.source)} ${round.answer.set}`;
+  els.popScore.textContent = String(round.score);
+  els.popClue.textContent = `Pop the word that means "${round.clue}"`;
+  els.popFeedback.textContent = "Pick a bubble.";
+  els.popOptions.innerHTML = "";
+  round.options.forEach((option) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = option.word;
+    button.addEventListener("click", () => answerPop(option, button));
+    els.popOptions.append(button);
+  });
+  flashRefresh(els.popOptions.closest(".game-card"));
+}
+
+function answerPop(selected, button) {
+  const round = state.currentPop;
+  if (!round || round.answered) return;
+  round.answered = true;
+  const correct = wordId(selected) === wordId(round.answer);
+  if (correct) round.score += 1;
+  button.classList.add(correct ? "correct" : "wrong");
+  [...els.popOptions.children].forEach((optionButton) => {
+    if (optionButton.textContent === round.answer.word) optionButton.classList.add("correct");
+    optionButton.disabled = true;
+  });
+  setStatus(round.answer, correct ? "mastered" : "missed");
+  els.popScore.textContent = String(round.score);
+  els.popFeedback.textContent = correct
+    ? `Pop! ${round.answer.word} means ${cleanSynonyms(round.answer)}.`
+    : `Not that bubble. Answer: ${round.answer.word}.`;
+}
+
 function renderList() {
   const term = els.searchWords.value.trim().toLowerCase();
   const category = els.vaultCategory.value;
@@ -807,6 +962,34 @@ function renderList() {
   });
 }
 
+function renderRoots() {
+  const entries = currentWordParts();
+  renderRootStats();
+  els.partMeta.textContent = `${partFilterLabel(state.partFilter)} Flashcards`;
+  els.rootsGrid.innerHTML = "";
+  entries.forEach((entry) => {
+    const item = document.createElement("article");
+    item.className = "root-card";
+    item.innerHTML = `
+      <div class="root-face root-front">
+        <span>${entry.type}</span>
+        <h3>${entry.part}</h3>
+        <p>Tap to reveal meaning</p>
+      </div>
+      <div class="root-face root-back">
+        <span>Meaning</span>
+        <h3>${entry.meaning}</h3>
+        <p>Examples</p>
+        <ul class="root-examples">
+          ${entry.examples.map((example) => `<li>${example}</li>`).join("")}
+        </ul>
+      </div>
+    `;
+    item.addEventListener("click", () => item.classList.toggle("flipped"));
+    els.rootsGrid.append(item);
+  });
+}
+
 function switchMode(mode) {
   if (mode !== "speed") stopSpeedTimer();
   state.mode = mode;
@@ -821,10 +1004,12 @@ function switchMode(mode) {
   if (mode === "sort") makeSortRound();
   if (mode === "scramble") makeScrambleRound();
   if (mode === "speed") startSpeedRound();
+  if (mode === "pop") makePopRound();
   if (mode === "list") {
     els.vaultCategory.value = state.category;
     renderList();
   }
+  if (mode === "roots") renderRoots();
 }
 
 function refreshScope() {
@@ -850,6 +1035,7 @@ function setup() {
   });
 
   els.modeButtons.forEach((button) => button.addEventListener("click", () => switchMode(button.dataset.mode)));
+  els.themeButtons.forEach((button) => button.addEventListener("click", () => setTheme(button.dataset.theme)));
   els.missedOnly.addEventListener("change", refreshScope);
   els.shuffleCards.addEventListener("change", refreshScope);
   els.flashcard.addEventListener("click", () => {
@@ -903,7 +1089,18 @@ function setup() {
   els.hintScramble.addEventListener("click", () => hintScramble());
   els.nextScramble.addEventListener("click", makeScrambleRound);
   els.restartSpeed.addEventListener("click", startSpeedRound);
+  els.speedLength.addEventListener("change", () => {
+    if (state.mode === "speed") startSpeedRound();
+  });
+  els.nextPop.addEventListener("click", makePopRound);
   els.vaultCategory.addEventListener("change", renderList);
+  els.partButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      state.partFilter = button.dataset.partFilter;
+      els.partButtons.forEach((item) => item.classList.toggle("active", item === button));
+      switchMode("roots");
+    });
+  });
   els.searchWords.addEventListener("input", renderList);
   els.resetProgress.addEventListener("click", () => {
     state.progress = { mastered: [], missed: [], streak: 0 };
@@ -918,6 +1115,7 @@ function setup() {
   });
 
   refreshScope();
+  setTheme(state.theme);
 }
 
 setup();

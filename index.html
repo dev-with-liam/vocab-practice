@@ -16,7 +16,6 @@
       <div class="top-actions">
         <nav class="site-nav" aria-label="Site pages">
           <a class="nav-link active" href="index.html">Game</a>
-          <a class="nav-link" href="about.html">About Me</a>
           <a class="nav-link" href="https://github.com/dev-with-liam/vocab-practice">GitHub</a>
         </nav>
         <div class="stats" aria-label="Study progress">
@@ -44,12 +43,23 @@
         </section>
 
         <section>
+          <h2>Word Parts</h2>
+          <div class="segmented" role="tablist" aria-label="Word parts">
+            <button class="part-mode-button active" data-part-filter="prefix" type="button">Prefixes</button>
+            <button class="part-mode-button" data-part-filter="suffix" type="button">Suffixes</button>
+            <button class="part-mode-button" data-part-filter="root" type="button">Roots</button>
+            <button class="part-mode-button" data-part-filter="stem" type="button">Stems</button>
+          </div>
+        </section>
+
+        <section>
           <h2>Mini-games</h2>
           <div class="segmented" role="tablist" aria-label="Mini-games">
             <button class="mode-button" data-mode="match" type="button">Match</button>
             <button class="mode-button" data-mode="sort" type="button">Sort</button>
             <button class="mode-button" data-mode="scramble" type="button">Scramble</button>
-            <button class="mode-button" data-mode="speed" type="button">Speed 10</button>
+            <button class="mode-button" data-mode="speed" type="button">Speed</button>
+            <button class="mode-button" data-mode="pop" type="button">Word Pop</button>
           </div>
         </section>
 
@@ -63,6 +73,14 @@
             <input id="shuffleCards" type="checkbox" checked>
             <span>Random rounds</span>
           </label>
+        </section>
+
+        <section>
+          <h2>Appearance</h2>
+          <div class="segmented" role="tablist" aria-label="Theme">
+            <button class="theme-button active" data-theme="dark" type="button">Dark</button>
+            <button class="theme-button" data-theme="light" type="button">Light</button>
+          </div>
         </section>
 
         <section>
@@ -173,12 +191,33 @@
                 <strong id="speedTimer">0s</strong>
               </div>
             </div>
+            <label class="speed-length">
+              <span>Questions</span>
+              <input id="speedLength" type="number" min="3" max="50" step="1" value="10">
+            </label>
             <h2 id="speedQuestion"></h2>
             <div id="speedOptions" class="options"></div>
           </div>
           <p id="speedFeedback" class="feedback"></p>
           <div class="action-row">
-            <button id="restartSpeed" type="button">Restart Speed 10</button>
+            <button id="restartSpeed" type="button">Start Speed Round</button>
+          </div>
+        </section>
+
+        <section id="popPanel" class="panel" aria-live="polite">
+          <div class="game-card pop-card">
+            <div class="speed-head">
+              <p id="popMeta" class="card-meta"></p>
+              <div class="speed-stats" aria-label="Word Pop score">
+                <strong id="popScore">0</strong>
+              </div>
+            </div>
+            <h2 id="popClue"></h2>
+            <div id="popOptions" class="bubble-grid"></div>
+          </div>
+          <p id="popFeedback" class="feedback"></p>
+          <div class="action-row">
+            <button id="nextPop" type="button">New Pop</button>
           </div>
         </section>
 
@@ -199,6 +238,17 @@
             <span id="listCount"></span>
           </div>
           <div id="wordList" class="vault2-grid"></div>
+        </section>
+
+        <section id="rootsPanel" class="panel roots">
+          <div class="roots-toolbar">
+            <div>
+              <p id="partMeta" class="card-meta">Word Parts</p>
+              <h2>Word Parts</h2>
+            </div>
+            <a href="https://holmes.ccsd59.org/wp-content/uploads/sites/11/2017/09/Stem-Lists-1-20.pdf">Source list</a>
+          </div>
+          <div id="rootsGrid" class="roots-grid"></div>
         </section>
       </section>
     </main>
