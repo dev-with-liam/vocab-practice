@@ -182,6 +182,54 @@ window.EXAM_VOCABULARY_WORDS = (() => {
     ["SSAT", 19, 20, "Superfluous", "adj", "extra; unnecessary; excessive"]
   ];
 
+  const examples = {
+    Abate: "The hallway noise began to abate once the principal raised her hand.",
+    Aberration: "The perfect quiz score was not an aberration; Theo had studied every night.",
+    Abhor: "Mina abhors cheating because it makes honest effort feel pointless.",
+    Abstain: "Several students chose to abstain from the vote until they understood both sides.",
+    Acclaim: "The robotics team earned acclaim after its machine climbed the ramp flawlessly.",
+    Accost: "A reporter tried to accost the mayor with questions outside the gym.",
+    Adept: "After months of practice, Iris became adept at solving analogy questions quickly.",
+    Adversary: "In the final round, the chess champion treated every adversary with respect.",
+    Alleviate: "A clearer schedule helped alleviate the stress before exam week.",
+    Aloof: "The new student seemed aloof at first, but he was only nervous.",
+    Ambiguous: "The ambiguous directions sent half the class to the auditorium and half to the library.",
+    Amiable: "Her amiable greeting made the substitute teacher feel welcome.",
+    Anecdote: "Mr. Lee opened the lesson with an anecdote about failing his first spelling bee.",
+    Anticipate: "The goalie tried to anticipate where the striker would kick the ball.",
+    Ardent: "An ardent fan painted the team's colors on every poster.",
+    Arrogant: "His arrogant tone faded once he realized the group had better evidence.",
+    Articulate: "Sofia gave an articulate explanation of why the experiment failed.",
+    Aspire: "Dante aspires to join the advanced orchestra next spring.",
+    Assail: "The editorial assailed the policy for ignoring student safety.",
+    Attribute: "The coach attributed the win to steady defense, not luck.",
+  };
+
+  const contexts = [
+    "debate round",
+    "science lab",
+    "student council meeting",
+    "history presentation",
+    "school newspaper article",
+    "mock trial",
+    "team practice",
+    "library discussion",
+  ];
+
+  function exampleFor(source, set, number, word, partOfSpeech, synonymText) {
+    if (examples[word]) return examples[word];
+    const lower = word.toLowerCase();
+    const clue = synonymText.split("; ")[0].toLowerCase();
+    const context = contexts[(set + number) % contexts.length];
+    if (partOfSpeech === "v") {
+      return `In the ${context}, the group had to ${lower} when the moment called for someone to ${clue}.`;
+    }
+    if (partOfSpeech === "n") {
+      return `The ${context} revealed ${lower}: ${clue} in a real situation.`;
+    }
+    return `The ${context} felt ${lower} because it was ${clue}.`;
+  }
+
   return rows.map(([source, set, number, word, partOfSpeech, synonyms]) => ({
     source,
     set,
@@ -189,6 +237,6 @@ window.EXAM_VOCABULARY_WORDS = (() => {
     word,
     partOfSpeech,
     synonyms: synonyms.split("; "),
-    example: `During a ${source} prep match, ${word.toLowerCase()} can mean ${synonyms.replaceAll("; ", ", ")}.`,
+    example: exampleFor(source, set, number, word, partOfSpeech, synonyms),
   }));
 })();

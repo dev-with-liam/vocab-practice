@@ -97,7 +97,7 @@ window.SIMPLE_VOCABULARY_WORDS = [
     partOfSpeech: "adj",
     synonyms: ["kind", "nice", "welcoming"],
     antonyms: ["mean", "rude", "unfriendly"],
-    example: "A friendly classmate saved Mia a seat at lunch."
+    example: "A friendly classmate welcomed Mia to the study group."
   },
   {
     source: "STARTER",
@@ -197,6 +197,6 @@ window.SIMPLE_VOCABULARY_WORDS = [
     partOfSpeech: "v",
     synonyms: ["start", "open", "launch"],
     antonyms: ["end", "finish", "stop"],
-    example: "The class began the quiz after morning announcements."
+    example: "The class will begin the quiz after morning announcements."
   }
 ];

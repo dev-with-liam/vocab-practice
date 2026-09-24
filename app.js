@@ -1,5 +1,6 @@
 const workbookWords = window.VOCABULARY_WORDS.map((word) => ({ source: "HSPT", ...word }));
-const allWords = shuffle([...(window.SIMPLE_VOCABULARY_WORDS || []), ...workbookWords, ...(window.EXAM_VOCABULARY_WORDS || [])]);
+const pdfWords = window.HSPT_PDF_VOCABULARY_WORDS || [];
+const allWords = shuffle([...(window.SIMPLE_VOCABULARY_WORDS || []), ...workbookWords, ...(window.EXAM_VOCABULARY_WORDS || []), ...pdfWords]);
 const sets = [...new Set(allWords.map((word) => word.set))].sort((a, b) => a - b);
 
 const antonymHints = {
@@ -255,6 +256,7 @@ function gameWords(requireAntonym = false) {
 }
 
 function simpleSentence(word) {
+  if (word.example) return word.example;
   if (word.source === "STARTER") return word.example;
   const lower = word.word.toLowerCase();
   if (word.partOfSpeech === "v") {
