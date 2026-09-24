@@ -1,6 +1,6 @@
 # Word Quest
 
-A static GitHub Pages app for practicing 877 vocabulary words.
+A static GitHub Pages app for practicing 380 vocabulary words.
 
 ## GitHub Pages
 
@@ -10,14 +10,15 @@ A static GitHub Pages app for practicing 877 vocabulary words.
 
 ## Features
 
-- Flashcards by world or across all 877 words
+- Flashcards by HSPT, ISEE, or SSAT category
 - Multiple-choice synonym and antonym quiz
 - Separate synonym and opposite multiple-choice practice
 - Mini-games: Match, Sort, and Scramble
 - Searchable word list
 - Local progress tracking with mastered, missed, and streak counts
 - No build step and no runtime dependencies
-- Includes 20 starter words, 200 HSPT workbook words, 80 ISEE practice words, 100 SSAT high-school prep words, and 477 HSPT PDF words and roots
+- Includes 200 HSPT workbook words, 80 ISEE practice words, and 100 SSAT high-school prep words
+- Vault includes 677 HSPT words by combining workbook and extended HSPT vocabulary
 - Uses short middle-school themed sentences in the app
 
 ## Run Locally

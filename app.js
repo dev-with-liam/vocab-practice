@@ -1,7 +1,8 @@
 const workbookWords = window.VOCABULARY_WORDS.map((word) => ({ source: "HSPT", ...word }));
-const pdfWords = window.HSPT_PDF_VOCABULARY_WORDS || [];
-const allWords = shuffle([...(window.SIMPLE_VOCABULARY_WORDS || []), ...workbookWords, ...(window.EXAM_VOCABULARY_WORDS || []), ...pdfWords]);
-const sets = [...new Set(allWords.map((word) => word.set))].sort((a, b) => a - b);
+const allWords = shuffle([...workbookWords, ...(window.EXAM_VOCABULARY_WORDS || [])]);
+const vaultPdfWords = (window.HSPT_PDF_VOCABULARY_WORDS || []).map((word) => ({ ...word, source: "HSPT" }));
+const vaultWords = [...allWords, ...vaultPdfWords];
+const categories = ["HSPT", "ISEE", "SSAT"];
 
 const antonymHints = {
   abundant: ["scarce", "limited", "lacking"],
@@ -99,15 +100,18 @@ const antonymHints = {
 };
 
 const state = {
-  set: "all",
+  category: "HSPT",
   mode: "flashcards",
   order: [],
   index: 0,
   revealed: false,
+  flashcardClickTimer: null,
+  sortMode: "synonym",
   currentQuiz: null,
   currentMatch: null,
   currentSort: null,
   currentScramble: null,
+  currentSpeed: null,
   progress: loadProgress(),
 };
 
@@ -128,9 +132,15 @@ const els = {
     match: document.querySelector("#matchPanel"),
     sort: document.querySelector("#sortPanel"),
     scramble: document.querySelector("#scramblePanel"),
+    speed: document.querySelector("#speedPanel"),
     list: document.querySelector("#listPanel"),
   },
   flashcard: document.querySelector("#flashcard"),
+  quizCard: document.querySelector("#quizPanel .question-card"),
+  matchCard: document.querySelector("#matchPanel .game-card"),
+  sortCard: document.querySelector("#sortPanel .game-card"),
+  scrambleCard: document.querySelector("#scramblePanel .game-card"),
+  speedCard: document.querySelector("#speedPanel .game-card"),
   cardSet: document.querySelector("#cardSet"),
   cardWord: document.querySelector("#cardWord"),
   cardPrompt: document.querySelector("#cardPrompt"),
@@ -154,6 +164,7 @@ const els = {
   sortMeta: document.querySelector("#sortMeta"),
   sortWord: document.querySelector("#sortWord"),
   sortClue: document.querySelector("#sortClue"),
+  sortModeButtons: document.querySelectorAll(".sort-toggle-button"),
   sortSynonym: document.querySelector("#sortSynonym"),
   sortAntonym: document.querySelector("#sortAntonym"),
   sortFeedback: document.querySelector("#sortFeedback"),
@@ -164,7 +175,16 @@ const els = {
   scrambleLetters: document.querySelector("#scrambleLetters"),
   scrambleFeedback: document.querySelector("#scrambleFeedback"),
   clearScramble: document.querySelector("#clearScramble"),
+  hintScramble: document.querySelector("#hintScramble"),
   nextScramble: document.querySelector("#nextScramble"),
+  speedMeta: document.querySelector("#speedMeta"),
+  speedScore: document.querySelector("#speedScore"),
+  speedTimer: document.querySelector("#speedTimer"),
+  speedQuestion: document.querySelector("#speedQuestion"),
+  speedOptions: document.querySelector("#speedOptions"),
+  speedFeedback: document.querySelector("#speedFeedback"),
+  restartSpeed: document.querySelector("#restartSpeed"),
+  vaultCategory: document.querySelector("#vaultCategory"),
   searchWords: document.querySelector("#searchWords"),
   listCount: document.querySelector("#listCount"),
   wordList: document.querySelector("#wordList"),
@@ -186,11 +206,11 @@ function saveProgress() {
 }
 
 function wordId(word) {
-  return `${word.set}-${word.number}-${word.word.toLowerCase()}`;
+  return `${word.source}-${word.set}-${word.number}-${word.word.toLowerCase()}`;
 }
 
 function scopedWords() {
-  let words = state.set === "all" ? allWords : allWords.filter((word) => word.set === Number(state.set));
+  let words = allWords.filter((word) => word.source === state.category);
   if (els.missedOnly.checked) {
     words = words.filter((word) => {
       const id = wordId(word);
@@ -257,7 +277,6 @@ function gameWords(requireAntonym = false) {
 
 function simpleSentence(word) {
   if (word.example) return word.example;
-  if (word.source === "STARTER") return word.example;
   const lower = word.word.toLowerCase();
   if (word.partOfSpeech === "v") {
     return `During class, the group tried to ${lower} the problem before the bell rang.`;
@@ -268,20 +287,12 @@ function simpleSentence(word) {
   return `In middle school, Jordan noticed something ${lower} during the project.`;
 }
 
-function setSource(set) {
-  return allWords.find((word) => word.set === Number(set))?.source || "HSPT";
-}
-
-function setLabel(set) {
-  const source = setSource(set);
-  if (source === "STARTER") return "Starter Words";
-  if (source === "HSPT") return `HSPT Words ${set}`;
-  if (source === "HSPT PDF") return `HSPT PDF ${set}`;
-  return `${source} Words ${set}`;
+function categoryLabel(category) {
+  return `${category} Words`;
 }
 
 function setMeta(word) {
-  return `${setLabel(word.set)} - ${word.partOfSpeech}`;
+  return `${categoryLabel(word.source)} ${word.set} - ${word.partOfSpeech}`;
 }
 
 function rankName(mastered) {
@@ -314,13 +325,31 @@ function renderStats() {
   const mastered = scoped.filter((word) => state.progress.mastered.includes(wordId(word))).length;
   els.masteredCount.textContent = String(state.progress.mastered.length);
   els.streakCount.textContent = String(state.progress.streak);
-  els.scopeLabel.textContent = state.set === "all" ? "All word categories" : setLabel(state.set);
+  els.scopeLabel.textContent = categoryLabel(state.category);
   els.scopeCount.textContent = `${scoped.length} word${scoped.length === 1 ? "" : "s"}`;
   els.rankLabel.textContent = rankName(state.progress.mastered.length);
   els.progressBar.style.width = scoped.length ? `${Math.round((mastered / scoped.length) * 100)}%` : "0%";
 }
 
-function renderFlashcard() {
+function vaultCategoryWords(category) {
+  return vaultWords.filter((word) => word.source === category);
+}
+
+function renderVaultStats(category, shownCount) {
+  const total = vaultCategoryWords(category).length;
+  els.scopeLabel.textContent = `${category} Vault`;
+  els.scopeCount.textContent = `${total} word${total === 1 ? "" : "s"}`;
+  els.rankLabel.textContent = `${shownCount} shown`;
+  els.progressBar.style.width = total ? `${Math.round((shownCount / total) * 100)}%` : "0%";
+}
+
+function flashRefresh(element) {
+  element.classList.remove("refresh-flash");
+  void element.offsetWidth;
+  element.classList.add("refresh-flash");
+}
+
+function renderFlashcard(animate = false) {
   const word = currentWord();
   els.cardSet.textContent = setMeta(word);
   els.cardWord.textContent = word.word;
@@ -333,6 +362,18 @@ function renderFlashcard() {
   `;
   els.flipCard.textContent = state.revealed ? "Hide" : "Reveal";
   els.flashcard.classList.toggle("revealed", state.revealed);
+  if (animate) flashRefresh(els.flashcard);
+}
+
+function flipFlashcard() {
+  state.revealed = !state.revealed;
+  renderFlashcard();
+}
+
+function nextFlashcard() {
+  state.index = (state.index + 1) % state.order.length;
+  state.revealed = false;
+  renderFlashcard(true);
 }
 
 function makeQuizQuestion(kind = state.mode === "opposites" ? "antonym" : "synonym") {
@@ -367,6 +408,7 @@ function renderQuiz() {
     els.quizOptions.append(button);
   });
   els.quizFeedback.textContent = "";
+  flashRefresh(els.quizCard);
 }
 
 function answerQuiz(selected, button) {
@@ -410,7 +452,7 @@ function makeMatchRound() {
 
 function renderMatch() {
   const round = state.currentMatch;
-  els.matchMeta.textContent = setLabel(round.answer.set);
+  els.matchMeta.textContent = `${categoryLabel(round.answer.source)} ${round.answer.set}`;
   els.matchWord.textContent = round.answer.word;
   els.matchPrompt.textContent = "Pick the matching synonym.";
   els.matchFeedback.textContent = "";
@@ -422,6 +464,7 @@ function renderMatch() {
     button.addEventListener("click", () => answerMatch(option, button));
     els.matchOptions.append(button);
   });
+  flashRefresh(els.matchCard);
 }
 
 function answerMatch(choice, button) {
@@ -447,15 +490,26 @@ function answerMatch(choice, button) {
 function makeSortRound() {
   const words = gameWords(true);
   const answer = randomItem(words);
-  const kind = Math.random() > 0.5 ? "antonym" : "synonym";
+  const kind = state.sortMode;
   const clue = randomItem(kind === "antonym" ? antonymsFor(answer) : answer.synonyms);
   state.currentSort = { answer, kind, clue, answered: false };
   renderSort();
 }
 
+function updateSortKind(kind) {
+  if (!state.currentSort) {
+    makeSortRound();
+    return;
+  }
+  state.currentSort.kind = kind;
+  state.currentSort.clue = randomItem(kind === "antonym" ? antonymsFor(state.currentSort.answer) : state.currentSort.answer.synonyms);
+  state.currentSort.answered = false;
+  renderSort();
+}
+
 function renderSort() {
   const round = state.currentSort;
-  els.sortMeta.textContent = setLabel(round.answer.set);
+  els.sortMeta.textContent = `${categoryLabel(round.answer.source)} ${round.answer.set}`;
   els.sortWord.textContent = round.answer.word;
   els.sortClue.textContent = round.clue;
   els.sortFeedback.textContent = "";
@@ -463,6 +517,7 @@ function renderSort() {
     button.disabled = false;
     button.classList.remove("correct", "wrong");
   });
+  flashRefresh(els.sortCard);
 }
 
 function answerSort(choice) {
@@ -491,30 +546,38 @@ function scrambleLetters(word) {
   return scrambled.map((letter, index) => ({ letter, index, used: false }));
 }
 
+function cleanScrambleAnswer(word) {
+  return word.toUpperCase().replace(/[^A-Z]/g, "");
+}
+
 function makeScrambleRound() {
   const words = gameWords().filter((word) => word.word.replace(/[^a-z]/gi, "").length <= 12);
   const answer = randomItem(words.length ? words : allWords);
+  const cleanAnswer = cleanScrambleAnswer(answer.word);
   state.currentScramble = {
     answer,
     letters: scrambleLetters(answer.word),
-    picked: [],
+    picked: Array(cleanAnswer.length).fill(null),
+    hintedSlots: [],
+    triedAfterHint: false,
     answered: false,
   };
   els.scrambleFeedback.textContent = "";
-  renderScramble();
+  renderScramble(true);
 }
 
-function renderScramble() {
+function renderScramble(animate = false) {
   const round = state.currentScramble;
-  els.scrambleMeta.textContent = setLabel(round.answer.set);
+  els.scrambleMeta.textContent = `${categoryLabel(round.answer.source)} ${round.answer.set}`;
   els.scrambleClue.textContent = `Unscramble: ${round.answer.synonyms[0]}, ${round.answer.synonyms[1]}`;
   els.scrambleAnswer.innerHTML = "";
-  const cleanAnswer = round.answer.word.toUpperCase().replace(/[^A-Z]/g, "");
+  const cleanAnswer = cleanScrambleAnswer(round.answer.word);
   cleanAnswer.split("").forEach((_, index) => {
     const slot = document.createElement("button");
     slot.type = "button";
-    slot.className = "slot";
+    slot.className = `slot${round.hintedSlots.includes(index) ? " hint-slot" : ""}`;
     slot.textContent = round.picked[index]?.letter || "";
+    slot.disabled = round.hintedSlots.includes(index);
     slot.addEventListener("click", () => removeScrambleLetter(index));
     els.scrambleAnswer.append(slot);
   });
@@ -527,42 +590,84 @@ function renderScramble() {
     button.addEventListener("click", () => pickScrambleLetter(tile.index));
     els.scrambleLetters.append(button);
   });
+  if (animate) flashRefresh(els.scrambleCard);
 }
 
 function pickScrambleLetter(index) {
   const round = state.currentScramble;
   const tile = round.letters.find((item) => item.index === index);
   if (!tile || tile.used || round.answered) return;
+  const slotIndex = round.picked.findIndex((item) => !item);
+  if (slotIndex === -1) return;
   tile.used = true;
-  round.picked.push(tile);
+  round.picked[slotIndex] = tile;
   renderScramble();
   checkScrambleIfComplete();
 }
 
 function removeScrambleLetter(slotIndex) {
   const round = state.currentScramble;
-  if (round.answered || !round.picked[slotIndex]) return;
+  if (round.answered || round.hintedSlots.includes(slotIndex) || !round.picked[slotIndex]) return;
   round.picked[slotIndex].used = false;
-  round.picked.splice(slotIndex, 1);
+  round.picked[slotIndex] = null;
   renderScramble();
 }
 
 function clearScramble() {
   const round = state.currentScramble;
   round.letters.forEach((tile) => (tile.used = false));
-  round.picked = [];
+  round.picked = Array(cleanScrambleAnswer(round.answer.word).length).fill(null);
+  round.hintedSlots = [];
+  round.triedAfterHint = false;
   round.answered = false;
   els.scrambleFeedback.textContent = "";
   renderScramble();
 }
 
+function hintScramble(message = "Hint added: two letters are in the right spots.") {
+  const round = state.currentScramble;
+  if (round.answered) return;
+  const answer = cleanScrambleAnswer(round.answer.word);
+  const openSlots = answer
+    .split("")
+    .map((_, index) => index)
+    .filter((index) => !round.hintedSlots.includes(index));
+  shuffle(openSlots)
+    .slice(0, 2)
+    .forEach((slotIndex) => {
+      if (round.picked[slotIndex]) round.picked[slotIndex].used = false;
+      const letter = answer[slotIndex];
+      const tile = round.letters.find((item) => !item.used && item.letter === letter);
+      if (!tile) return;
+      tile.used = true;
+      round.picked[slotIndex] = tile;
+      round.hintedSlots.push(slotIndex);
+    });
+  els.scrambleFeedback.textContent = message;
+  renderScramble();
+  checkScrambleIfComplete();
+}
+
 function checkScrambleIfComplete() {
   const round = state.currentScramble;
-  const answer = round.answer.word.toUpperCase().replace(/[^A-Z]/g, "");
+  const answer = cleanScrambleAnswer(round.answer.word);
+  if (round.picked.some((tile) => !tile)) return;
   const guess = round.picked.map((tile) => tile.letter).join("");
-  if (guess.length !== answer.length) return;
-  round.answered = true;
   const correct = guess === answer;
+  if (!correct && round.hintedSlots.length < 2) {
+    round.picked.forEach((tile, index) => {
+      if (tile && !round.hintedSlots.includes(index)) tile.used = false;
+    });
+    round.picked = round.picked.map((tile, index) => (round.hintedSlots.includes(index) ? tile : null));
+    hintScramble("Not quite. Two hint letters are now in the right spots.");
+    return;
+  }
+  if (!correct && !round.triedAfterHint) {
+    round.triedAfterHint = true;
+    els.scrambleFeedback.textContent = "Close. Try once more with the hint letters.";
+    return;
+  }
+  round.answered = true;
   setStatus(round.answer, correct ? "mastered" : "missed");
   els.scrambleFeedback.textContent = correct
     ? `✅ Solved. ${round.answer.word}: ${cleanSynonyms(round.answer)}.`
@@ -570,42 +675,156 @@ function checkScrambleIfComplete() {
   renderScramble();
 }
 
+function makeSpeedOptions(answer) {
+  const pool = allWords.filter((word) => wordId(word) !== wordId(answer));
+  return shuffle([answer, ...shuffle(pool).slice(0, 3)]);
+}
+
+function speedSeconds(round) {
+  const end = round.finishedAt || Date.now();
+  return Math.floor((end - round.startedAt) / 1000);
+}
+
+function updateSpeedTimer() {
+  const round = state.currentSpeed;
+  if (!round) return;
+  els.speedTimer.textContent = `${speedSeconds(round)}s`;
+}
+
+function stopSpeedTimer() {
+  if (!state.currentSpeed?.timerId) return;
+  clearInterval(state.currentSpeed.timerId);
+  state.currentSpeed.timerId = null;
+}
+
+function startSpeedRound() {
+  stopSpeedTimer();
+  const words = shuffle(gameWords()).slice(0, 10);
+  state.currentSpeed = {
+    words,
+    index: 0,
+    score: 0,
+    answered: false,
+    startedAt: Date.now(),
+    finishedAt: null,
+    timerId: null,
+    options: makeSpeedOptions(words[0]),
+  };
+  state.currentSpeed.timerId = setInterval(updateSpeedTimer, 1000);
+  renderSpeed();
+  updateSpeedTimer();
+}
+
+function renderSpeed() {
+  const round = state.currentSpeed;
+  if (!round) return;
+  const total = round.words.length;
+  if (round.index >= total) {
+    stopSpeedTimer();
+    const seconds = speedSeconds(round);
+    els.speedMeta.textContent = `${categoryLabel(state.category)} complete`;
+    els.speedScore.textContent = `${round.score}/${total}`;
+    els.speedTimer.textContent = `${seconds}s`;
+    els.speedQuestion.textContent = `Finished in ${seconds}s`;
+    els.speedOptions.innerHTML = "";
+    els.speedFeedback.textContent = `Score: ${round.score} correct out of ${total}.`;
+    flashRefresh(els.speedCard);
+    return;
+  }
+
+  const answer = round.words[round.index];
+  els.speedMeta.textContent = `${categoryLabel(answer.source)} ${answer.set} - word ${round.index + 1} of ${total}`;
+  els.speedScore.textContent = `${round.score}/${total}`;
+  els.speedQuestion.textContent = `Which word means "${answer.synonyms[0]}"?`;
+  els.speedFeedback.textContent = "Pick fast. Your round ends after 10 words.";
+  els.speedOptions.innerHTML = "";
+  round.options.forEach((option) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = option.word;
+    button.addEventListener("click", () => answerSpeed(option, button));
+    els.speedOptions.append(button);
+  });
+  flashRefresh(els.speedCard);
+}
+
+function answerSpeed(selected, button) {
+  const round = state.currentSpeed;
+  if (!round || round.answered || round.index >= round.words.length) return;
+  round.answered = true;
+  const answer = round.words[round.index];
+  const correct = wordId(selected) === wordId(answer);
+  if (correct) round.score += 1;
+  button.classList.add(correct ? "correct" : "wrong");
+  [...els.speedOptions.children].forEach((optionButton) => {
+    if (optionButton.textContent === answer.word) optionButton.classList.add("correct");
+    optionButton.disabled = true;
+  });
+  setStatus(answer, correct ? "mastered" : "missed");
+  els.speedScore.textContent = `${round.score}/${round.words.length}`;
+  els.speedFeedback.textContent = correct ? `Correct: ${answer.word}.` : `Answer: ${answer.word}.`;
+  setTimeout(() => {
+    if (state.currentSpeed !== round || state.mode !== "speed") return;
+    round.index += 1;
+    round.answered = false;
+    if (round.index >= round.words.length) {
+      round.finishedAt = Date.now();
+    } else {
+      round.options = makeSpeedOptions(round.words[round.index]);
+    }
+    renderSpeed();
+  }, 520);
+}
+
 function renderList() {
   const term = els.searchWords.value.trim().toLowerCase();
-  const words = scopedWords().filter((word) => {
+  const category = els.vaultCategory.value;
+  const words = vaultCategoryWords(category).filter((word) => {
     const haystack = `${word.word} ${word.synonyms.join(" ")} ${antonymsFor(word).join(" ")} ${simpleSentence(word)}`.toLowerCase();
     return haystack.includes(term);
   });
-  els.listCount.textContent = `${words.length} shown`;
+  renderVaultStats(category, words.length);
+  els.listCount.textContent = `${words.length} ${category} shown`;
   els.wordList.innerHTML = "";
   words.forEach((word) => {
     const item = document.createElement("article");
-    item.className = "word-item";
+    item.className = "vault2-card";
     const status = state.progress.mastered.includes(wordId(word)) ? "Mastered" : state.progress.missed.includes(wordId(word)) ? "Missed" : "New";
     item.innerHTML = `
-      <span class="badge">${setLabel(word.set)} - ${status}</span>
-      <h3>${word.word} <small>(${word.partOfSpeech})</small></h3>
-      <p><span>Synonyms</span><strong>${cleanSynonyms(word)}</strong></p>
-      <p><span>Antonyms</span><strong>${cleanAntonyms(word)}</strong></p>
-      <p>${simpleSentence(word)}</p>
+      <div class="vault2-card-head">
+        <span class="badge">${categoryLabel(word.source)} ${word.set}</span>
+        <span class="vault2-status">${status}</span>
+      </div>
+      <h3>${word.word}</h3>
+      <span class="vault2-part">${word.partOfSpeech}</span>
+      <div class="vault2-clues">
+        <p><span>Synonyms</span><strong>${cleanSynonyms(word)}</strong></p>
+        <p><span>Antonyms</span><strong>${cleanAntonyms(word)}</strong></p>
+      </div>
+      <p class="vault2-example">${simpleSentence(word)}</p>
     `;
     els.wordList.append(item);
   });
 }
 
 function switchMode(mode) {
+  if (mode !== "speed") stopSpeedTimer();
   state.mode = mode;
   els.modeButtons.forEach((button) => button.classList.toggle("active", button.dataset.mode === mode));
   Object.entries(els.panels).forEach(([name, panel]) => {
     panel.classList.toggle("active", name === mode || (name === "quiz" && mode === "opposites"));
   });
-  if (mode === "flashcards") renderFlashcard();
+  if (mode === "flashcards") renderFlashcard(true);
   if (mode === "quiz") makeQuizQuestion("synonym");
   if (mode === "opposites") makeQuizQuestion("antonym");
   if (mode === "match") makeMatchRound();
   if (mode === "sort") makeSortRound();
   if (mode === "scramble") makeScrambleRound();
-  if (mode === "list") renderList();
+  if (mode === "speed") startSpeedRound();
+  if (mode === "list") {
+    els.vaultCategory.value = state.category;
+    renderList();
+  }
 }
 
 function refreshScope() {
@@ -615,14 +834,14 @@ function refreshScope() {
 }
 
 function setup() {
-  ["all", ...sets.map(String)].forEach((set) => {
+  categories.forEach((category) => {
     const button = document.createElement("button");
     button.type = "button";
-    button.textContent = set === "all" ? "All Categories" : setLabel(set);
-    if (set !== "all") button.title = setLabel(set);
-    button.classList.toggle("active", set === state.set);
+    button.textContent = categoryLabel(category);
+    button.title = categoryLabel(category);
+    button.classList.toggle("active", category === state.category);
     button.addEventListener("click", () => {
-      state.set = set;
+      state.category = category;
       els.setButtons.querySelectorAll("button").forEach((item) => item.classList.remove("active"));
       button.classList.add("active");
       refreshScope();
@@ -634,22 +853,27 @@ function setup() {
   els.missedOnly.addEventListener("change", refreshScope);
   els.shuffleCards.addEventListener("change", refreshScope);
   els.flashcard.addEventListener("click", () => {
-    state.revealed = !state.revealed;
-    renderFlashcard();
+    clearTimeout(state.flashcardClickTimer);
+    state.flashcardClickTimer = setTimeout(() => {
+      flipFlashcard();
+      state.flashcardClickTimer = null;
+    }, 220);
+  });
+  els.flashcard.addEventListener("dblclick", () => {
+    clearTimeout(state.flashcardClickTimer);
+    state.flashcardClickTimer = null;
+    nextFlashcard();
   });
   els.flipCard.addEventListener("click", () => {
-    state.revealed = !state.revealed;
-    renderFlashcard();
+    flipFlashcard();
   });
   els.prevCard.addEventListener("click", () => {
     state.index = (state.index - 1 + state.order.length) % state.order.length;
     state.revealed = false;
-    renderFlashcard();
+    renderFlashcard(true);
   });
   els.nextCard.addEventListener("click", () => {
-    state.index = (state.index + 1) % state.order.length;
-    state.revealed = false;
-    renderFlashcard();
+    nextFlashcard();
   });
   els.markMissed.addEventListener("click", () => {
     setStatus(currentWord(), "missed");
@@ -661,11 +885,25 @@ function setup() {
   });
   els.nextQuiz.addEventListener("click", () => makeQuizQuestion());
   els.nextMatch.addEventListener("click", makeMatchRound);
+  els.sortModeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      state.sortMode = button.dataset.sortMode;
+      els.sortModeButtons.forEach((item) => item.classList.toggle("active", item === button));
+      updateSortKind(state.sortMode);
+    });
+  });
   els.sortSynonym.addEventListener("click", () => answerSort("synonym"));
   els.sortAntonym.addEventListener("click", () => answerSort("antonym"));
   els.nextSort.addEventListener("click", makeSortRound);
+  els.sortCard.addEventListener("dblclick", (event) => {
+    if (event.target.closest("button")) return;
+    makeSortRound();
+  });
   els.clearScramble.addEventListener("click", clearScramble);
+  els.hintScramble.addEventListener("click", () => hintScramble());
   els.nextScramble.addEventListener("click", makeScrambleRound);
+  els.restartSpeed.addEventListener("click", startSpeedRound);
+  els.vaultCategory.addEventListener("change", renderList);
   els.searchWords.addEventListener("input", renderList);
   els.resetProgress.addEventListener("click", () => {
     state.progress = { mastered: [], missed: [], streak: 0 };

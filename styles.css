@@ -31,7 +31,8 @@ body {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -372,6 +373,34 @@ h1 {
   box-shadow: 0 22px 70px rgba(45, 212, 191, 0.2);
 }
 
+.refresh-flash {
+  animation: refresh-flash 360ms ease-out;
+}
+
+@keyframes refresh-flash {
+  0% {
+    border-color: rgba(250, 204, 21, 0.9);
+    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.32), 0 20px 60px rgba(0, 0, 0, 0.28);
+    transform: translateY(0) scale(1);
+  }
+
+  45% {
+    border-color: rgba(45, 212, 191, 0.78);
+    box-shadow: 0 0 0 8px rgba(45, 212, 191, 0.14), 0 24px 70px rgba(45, 212, 191, 0.2);
+    transform: translateY(-2px) scale(1.01);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .refresh-flash {
+    animation: none;
+  }
+}
+
 .card-answer {
   border-top: 1px solid var(--line);
   margin-top: 1.3rem;
@@ -455,6 +484,56 @@ h1 {
   font-weight: 900;
 }
 
+.sort-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0.85rem 0 1rem;
+}
+
+.sort-toggle-button {
+  min-width: 0;
+  min-height: 2.45rem;
+  padding: 0.5rem;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+
+.sort-toggle-button.active {
+  color: #06131d;
+  background: linear-gradient(135deg, var(--yellow), var(--cyan));
+}
+
+.speed-head {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.speed-head p {
+  margin: 0;
+}
+
+.speed-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.speed-stats strong {
+  min-width: 4.5rem;
+  border: 1px solid rgba(45, 212, 191, 0.34);
+  border-radius: 8px;
+  padding: 0.35rem 0.65rem;
+  color: var(--cyan);
+  text-align: center;
+  background: rgba(45, 212, 191, 0.08);
+}
+
 .answer-slots,
 .letter-bank {
   display: grid;
@@ -477,6 +556,12 @@ h1 {
   background: rgba(255, 255, 255, 0.06);
 }
 
+.answer-slots .hint-slot {
+  border-style: solid;
+  color: #052014;
+  background: linear-gradient(135deg, var(--yellow), var(--green));
+}
+
 .letter-bank button:disabled {
   opacity: 0.28;
   transform: none;
@@ -495,6 +580,7 @@ h1 {
   align-items: center;
 }
 
+.word-list-head select,
 .word-list-head input {
   width: 100%;
   min-height: 3rem;
@@ -506,6 +592,12 @@ h1 {
   outline: none;
 }
 
+.word-list-head select {
+  max-width: 9rem;
+  cursor: pointer;
+}
+
+.word-list-head select:focus,
 .word-list-head input:focus {
   border-color: var(--cyan);
   box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.16);
@@ -561,6 +653,152 @@ h1 {
 
 .word-item strong {
   color: #e0f2fe;
+}
+
+.vault2 {
+  display: none;
+}
+
+.vault2.active {
+  display: grid;
+  gap: 1rem;
+}
+
+.vault2-toolbar {
+  display: grid;
+  grid-template-columns: minmax(10rem, 0.7fr) minmax(16rem, 1.3fr) auto;
+  gap: 0.85rem;
+  align-items: end;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.vault2-toolbar h2 {
+  margin: 0.15rem 0 0;
+  font-size: clamp(1.7rem, 3vw, 2.6rem);
+  line-height: 1;
+}
+
+.vault2-filters {
+  display: grid;
+  grid-template-columns: 8rem minmax(12rem, 1fr);
+  gap: 0.65rem;
+}
+
+.vault2-filters select,
+.vault2-filters input {
+  width: 100%;
+  min-height: 3rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+}
+
+.vault2-filters select {
+  cursor: pointer;
+}
+
+.vault2-filters select:focus,
+.vault2-filters input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.16);
+}
+
+.vault2-filters input::placeholder {
+  color: #8091a3;
+}
+
+.vault2-toolbar > span {
+  white-space: nowrap;
+  color: var(--yellow);
+  font-weight: 850;
+}
+
+.vault2-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 0.85rem;
+}
+
+.vault2-card {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.045)),
+    rgba(18, 17, 25, 0.72);
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.vault2-card:hover {
+  border-color: rgba(45, 212, 191, 0.48);
+  background:
+    linear-gradient(180deg, rgba(45, 212, 191, 0.12), rgba(255, 255, 255, 0.055)),
+    rgba(18, 17, 25, 0.8);
+  transform: translateY(-2px);
+}
+
+.vault2-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.vault2-status,
+.vault2-part {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.vault2-card h3 {
+  margin: 0;
+  font-size: clamp(1.75rem, 4vw, 2.45rem);
+  line-height: 0.98;
+}
+
+.vault2-clues {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.vault2-clues p {
+  border-left: 3px solid rgba(45, 212, 191, 0.56);
+  margin: 0;
+  padding-left: 0.65rem;
+  color: var(--muted);
+}
+
+.vault2-clues span {
+  display: block;
+  color: var(--cyan);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.vault2-clues strong {
+  display: block;
+  color: #e0f2fe;
+}
+
+.vault2-example {
+  border-top: 1px solid var(--line);
+  margin: 0;
+  padding-top: 0.75rem;
+  color: var(--muted);
+  line-height: 1.52;
 }
 
 .badge {
@@ -687,12 +925,15 @@ h1 {
 
   .progress-strip,
   .options,
-  .word-list-head {
+  .word-list-head,
+  .vault2-toolbar,
+  .vault2-filters {
     grid-template-columns: 1fr;
   }
 
   .progress-strip,
-  .word-list-head {
+  .word-list-head,
+  .vault2-toolbar {
     display: grid;
   }
 }

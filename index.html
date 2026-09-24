@@ -9,9 +9,9 @@
   <body>
     <header class="topbar">
       <div>
-        <p class="eyebrow">877-word challenge</p>
+        <p class="eyebrow">380-word challenge</p>
         <h1>Word Quest</h1>
-        <p class="tagline">Level up starter, HSPT, ISEE, and SSAT vocab in quick rounds.</p>
+        <p class="tagline">Level up HSPT, ISEE, and SSAT vocab in quick rounds.</p>
       </div>
       <div class="top-actions">
         <nav class="site-nav" aria-label="Site pages">
@@ -49,6 +49,7 @@
             <button class="mode-button" data-mode="match" type="button">Match</button>
             <button class="mode-button" data-mode="sort" type="button">Sort</button>
             <button class="mode-button" data-mode="scramble" type="button">Scramble</button>
+            <button class="mode-button" data-mode="speed" type="button">Speed 10</button>
           </div>
         </section>
 
@@ -76,8 +77,8 @@
       <section class="workspace">
         <div class="progress-strip">
           <div>
-            <span id="scopeLabel">All word categories</span>
-            <strong id="scopeCount">877 words</strong>
+            <span id="scopeLabel">HSPT Words</span>
+            <strong id="scopeCount">200 words</strong>
             <em id="rankLabel">Rookie Rank</em>
           </div>
           <div class="bar" aria-hidden="true"><span id="progressBar"></span></div>
@@ -132,6 +133,10 @@
           <div class="game-card">
             <p id="sortMeta" class="card-meta"></p>
             <h2 id="sortWord"></h2>
+            <div class="sort-toggle" role="tablist" aria-label="Sort clue type">
+              <button class="sort-toggle-button active" data-sort-mode="synonym" type="button">Synonyms</button>
+              <button class="sort-toggle-button" data-sort-mode="antonym" type="button">Opposites</button>
+            </div>
             <p id="sortClue" class="sort-clue"></p>
             <div class="action-row">
               <button id="sortSynonym" type="button">Synonym</button>
@@ -154,23 +159,52 @@
           <p id="scrambleFeedback" class="feedback"></p>
           <div class="action-row">
             <button id="clearScramble" class="secondary" type="button">Clear</button>
+            <button id="hintScramble" class="secondary" type="button">Hint</button>
             <button id="nextScramble" type="button">New Scramble</button>
           </div>
         </section>
 
-        <section id="listPanel" class="panel">
-          <div class="word-list-head">
-            <input id="searchWords" type="search" placeholder="Search words, synonyms, or antonyms">
+        <section id="speedPanel" class="panel" aria-live="polite">
+          <div class="game-card">
+            <div class="speed-head">
+              <p id="speedMeta" class="card-meta"></p>
+              <div class="speed-stats" aria-label="Speed round stats">
+                <strong id="speedScore">0/10</strong>
+                <strong id="speedTimer">0s</strong>
+              </div>
+            </div>
+            <h2 id="speedQuestion"></h2>
+            <div id="speedOptions" class="options"></div>
+          </div>
+          <p id="speedFeedback" class="feedback"></p>
+          <div class="action-row">
+            <button id="restartSpeed" type="button">Restart Speed 10</button>
+          </div>
+        </section>
+
+        <section id="listPanel" class="panel vault2">
+          <div class="vault2-toolbar">
+            <div>
+              <p class="card-meta">Vault 2</p>
+              <h2>Word Vault</h2>
+            </div>
+            <div class="vault2-filters">
+              <select id="vaultCategory" aria-label="Vault category filter">
+                <option value="HSPT">HSPT</option>
+                <option value="SSAT">SSAT</option>
+                <option value="ISEE">ISEE</option>
+              </select>
+              <input id="searchWords" type="search" placeholder="Search words, synonyms, or antonyms">
+            </div>
             <span id="listCount"></span>
           </div>
-          <div id="wordList" class="word-list"></div>
+          <div id="wordList" class="vault2-grid"></div>
         </section>
       </section>
     </main>
 
     <script src="data/vocabulary.js?v=20260924a"></script>
     <script src="data/exam-vocabulary.js?v=20260924a"></script>
-    <script src="data/simple-vocabulary.js?v=20260924a"></script>
     <script src="data/hspt-pdf-vocabulary.js?v=20260924a"></script>
     <script src="app.js?v=20260924a"></script>
   </body>
