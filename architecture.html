@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Architecture - Word Quest</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">How it works</p>
+        <h1>Architecture</h1>
+        <p class="tagline">A simple guide to how Word Quest is built with HTML, CSS, JavaScript, and vocabulary data files.</p>
+      </div>
+      <nav class="site-nav" aria-label="Site pages">
+        <a class="nav-link" href="index.html">Game</a>
+        <a class="nav-link" href="about.html">About Me</a>
+        <a class="nav-link active" href="architecture.html">Architecture</a>
+        <a class="nav-link" href="https://github.com/dev-with-liam/vocab-practice">GitHub</a>
+      </nav>
+    </header>
+
+    <main class="about-shell">
+      <section class="interest-section">
+        <h2>App Structure</h2>
+        <div class="interest-grid">
+          <article class="interest-card">
+            <span>01</span>
+            <h3>HTML</h3>
+            <p>The index page creates the screens, buttons, flashcards, quiz panels, mini-games, word vault, and word-parts area that users see.</p>
+          </article>
+          <article class="interest-card">
+            <span>02</span>
+            <h3>CSS</h3>
+            <p>The stylesheet controls the layout, colors, cards, buttons, dark and light themes, mobile design, and hidden or visible panels.</p>
+          </article>
+          <article class="interest-card">
+            <span>03</span>
+            <h3>JavaScript</h3>
+            <p>The app script loads the words, listens for button clicks, switches modes, builds questions, checks answers, and saves progress.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="interest-section">
+        <h2>Data Flow</h2>
+        <div class="interest-grid">
+          <article class="interest-card">
+            <span>04</span>
+            <h3>Vocabulary Files</h3>
+            <p>The files in the data folder define the words, tests, sets, synonyms, antonyms, and word parts used by the practice modes.</p>
+          </article>
+          <article class="interest-card">
+            <span>05</span>
+            <h3>App State</h3>
+            <p>The state object remembers the selected test category, current mode, current card, theme, quiz round, and user progress.</p>
+          </article>
+          <article class="interest-card">
+            <span>06</span>
+            <h3>Rendering</h3>
+            <p>Render functions update the page by changing text, filling option buttons, showing feedback, and displaying the correct panel.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="interest-section">
+        <h2>User Experience</h2>
+        <div class="interest-grid">
+          <article class="interest-card">
+            <span>07</span>
+            <h3>Home Screen</h3>
+            <p>The app starts on the home screen. When a user clicks a start button, JavaScript opens the main practice interface.</p>
+          </article>
+          <article class="interest-card">
+            <span>08</span>
+            <h3>Practice Modes</h3>
+            <p>Each mode has its own panel, including flashcards, synonyms, opposites, match, sort, scramble, speed, Word Pop, vault, and word parts.</p>
+          </article>
+          <article class="interest-card">
+            <span>09</span>
+            <h3>Saved Progress</h3>
+            <p>Progress is saved in the browser with localStorage, so mastered words, missed words, streaks, and theme choices can stay after reloading.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
