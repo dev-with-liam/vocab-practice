@@ -81,6 +81,7 @@ function testWordPartEntries(type) {
     });
 }
 
+const testPrefixEntries = testWordPartEntries("prefix");
 const testRootEntries = testWordPartEntries("root");
 const testStemEntries = testWordPartEntries("stem");
 
@@ -452,6 +453,9 @@ function renderVaultStats(category, shownCount) {
 }
 
 function currentWordParts() {
+  if (state.partFilter === "prefix" && testPrefixEntries.length) {
+    return testPrefixEntries;
+  }
   if (state.partFilter === "root" && testRootEntries.length) {
     return testRootEntries;
   }
