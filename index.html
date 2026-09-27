@@ -6,7 +6,44 @@
     <title>Word Quest</title>
     <link rel="stylesheet" href="styles.css">
   </head>
-  <body>
+  <body class="home-active">
+    <section id="homeScreen" class="home-screen" aria-labelledby="homeTitle">
+      <div class="home-panel">
+        <div class="home-copy">
+          <p class="eyebrow">Vocabulary adventure</p>
+          <h1 id="homeTitle">Word Quest</h1>
+          <p class="tagline">Practice test vocab, word parts, and quick mini-games from one cozy study hub.</p>
+        </div>
+
+        <div class="home-actions" aria-label="Home menu">
+          <button class="home-start" data-start-mode="flashcards" type="button">Start Learning</button>
+          <button class="secondary home-start" data-start-mode="speed" type="button">Speed Round</button>
+          <button class="secondary home-start" data-start-mode="list" type="button">Word Vault</button>
+          <button class="secondary home-start" data-start-mode="roots" data-part-filter="root" type="button">Word Parts</button>
+          <button id="showTutorial" class="secondary" type="button">Tutorial</button>
+        </div>
+
+        <div class="home-progress" aria-label="Progress preview">
+          <span><small>XP</small><strong id="homeMasteredCount">0</strong></span>
+          <span><small>Combo</small><strong id="homeStreakCount">0</strong></span>
+          <span><small>Modes</small><strong>9</strong></span>
+        </div>
+
+        <div id="tutorialPanel" class="tutorial-panel" hidden>
+          <div class="tutorial-head">
+            <h2>Tutorial</h2>
+            <button id="hideTutorial" class="secondary" type="button">Close</button>
+          </div>
+          <ol>
+            <li>Start with Flip to learn each word and reveal its clues.</li>
+            <li>Use Synonyms, Opposites, and mini-games to test yourself.</li>
+            <li>Open Word Parts for prefixes, suffixes, roots, and stems.</li>
+            <li>Mark words as Got It or Need Practice to track progress.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
     <header class="topbar">
       <div>
         <p class="eyebrow">380-word challenge</p>
@@ -15,6 +52,7 @@
       </div>
       <div class="top-actions">
         <nav class="site-nav" aria-label="Site pages">
+          <button id="homeButton" class="nav-link nav-button" type="button">Home</button>
           <a class="nav-link active" href="index.html">Game</a>
           <a class="nav-link" href="https://github.com/dev-with-liam/vocab-practice">GitHub</a>
         </nav>
@@ -260,6 +298,6 @@
     <script src="data/exam-vocabulary.js?v=20260924a"></script>
     <script src="data/hspt-pdf-vocabulary.js?v=20260924a"></script>
     <script src="data/test-stems.js?v=20260926a"></script>
-    <script src="app.js?v=20260926c"></script>
+    <script src="app.js?v=20260926f"></script>
   </body>
 </html>

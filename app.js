@@ -201,6 +201,14 @@ const state = {
 
 const els = {
   setButtons: document.querySelector("#setButtons"),
+  homeScreen: document.querySelector("#homeScreen"),
+  homeStarts: document.querySelectorAll(".home-start"),
+  homeButton: document.querySelector("#homeButton"),
+  showTutorial: document.querySelector("#showTutorial"),
+  hideTutorial: document.querySelector("#hideTutorial"),
+  tutorialPanel: document.querySelector("#tutorialPanel"),
+  homeMasteredCount: document.querySelector("#homeMasteredCount"),
+  homeStreakCount: document.querySelector("#homeStreakCount"),
   modeButtons: document.querySelectorAll(".mode-button"),
   backButtons: document.querySelectorAll(".back-to-game"),
   themeButtons: document.querySelectorAll(".theme-button"),
@@ -434,6 +442,8 @@ function renderStats() {
   const mastered = scoped.filter((word) => state.progress.mastered.includes(wordId(word))).length;
   els.masteredCount.textContent = String(state.progress.mastered.length);
   els.streakCount.textContent = String(state.progress.streak);
+  els.homeMasteredCount.textContent = String(state.progress.mastered.length);
+  els.homeStreakCount.textContent = String(state.progress.streak);
   els.scopeLabel.textContent = categoryLabel(state.category);
   els.scopeCount.textContent = `${scoped.length} word${scoped.length === 1 ? "" : "s"}`;
   els.rankLabel.textContent = rankName(state.progress.mastered.length);
@@ -1059,6 +1069,20 @@ function switchMode(mode) {
   if (mode === "roots") renderRoots();
 }
 
+function openApp(mode = "flashcards", partFilter = "") {
+  document.body.classList.remove("home-active");
+  if (partFilter) {
+    state.partFilter = partFilter;
+    els.partButtons.forEach((button) => button.classList.toggle("active", button.dataset.partFilter === partFilter));
+  }
+  switchMode(mode);
+}
+
+function showHome() {
+  stopSpeedTimer();
+  document.body.classList.add("home-active");
+}
+
 function refreshScope() {
   rebuildOrder();
   renderStats();
@@ -1083,6 +1107,16 @@ function setup() {
 
   els.modeButtons.forEach((button) => button.addEventListener("click", () => switchMode(button.dataset.mode)));
   els.backButtons.forEach((button) => button.addEventListener("click", () => switchMode("flashcards")));
+  els.homeStarts.forEach((button) => {
+    button.addEventListener("click", () => openApp(button.dataset.startMode, button.dataset.partFilter));
+  });
+  els.homeButton.addEventListener("click", showHome);
+  els.showTutorial.addEventListener("click", () => {
+    els.tutorialPanel.hidden = false;
+  });
+  els.hideTutorial.addEventListener("click", () => {
+    els.tutorialPanel.hidden = true;
+  });
   els.themeButtons.forEach((button) => button.addEventListener("click", () => setTheme(button.dataset.theme)));
   els.missedOnly.addEventListener("change", refreshScope);
   els.shuffleCards.addEventListener("change", refreshScope);
@@ -1164,6 +1198,11 @@ function setup() {
 
   refreshScope();
   setTheme(state.theme);
+  showHome();
 }
 
 setup();
+
+window.addEventListener("pageshow", () => {
+  showHome();
+});
