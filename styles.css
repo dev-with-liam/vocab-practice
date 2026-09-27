@@ -154,13 +154,12 @@ button.danger {
   z-index: 20;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 0.7rem 0.95rem;
+  padding: 0.62rem 0.85rem;
   color: var(--ink);
-  background: var(--panel-strong);
-  box-shadow: var(--shadow);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
   font-weight: 850;
   text-decoration: none;
-  backdrop-filter: blur(18px);
 }
 
 .bottom-left-link:hover,
