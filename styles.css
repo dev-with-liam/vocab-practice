@@ -207,7 +207,7 @@ h1 {
 
 .app-shell {
   display: grid;
-  grid-template-columns: minmax(16rem, 19rem) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 19rem);
   gap: 1rem;
   padding: 0 clamp(1rem, 4vw, 3rem) 2rem;
 }
@@ -223,6 +223,7 @@ h1 {
 }
 
 .sidebar {
+  order: 2;
   align-self: start;
   padding: 1rem;
 }
@@ -295,16 +296,21 @@ h1 {
 }
 
 .workspace {
+  display: flex;
+  flex-direction: column;
+  order: 1;
   min-height: 35rem;
   padding: clamp(1rem, 2.5vw, 1.5rem);
 }
 
 .progress-strip {
+  order: 2;
   display: grid;
   grid-template-columns: minmax(10rem, 14rem) 1fr;
   gap: 1rem;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 0;
 }
 
 .progress-strip span {
@@ -352,6 +358,7 @@ h1 {
 
 .panel.active {
   display: block;
+  order: 1;
 }
 
 .card-stage {
@@ -387,8 +394,15 @@ h1 {
 }
 
 .flashcard {
+  display: grid;
+  align-content: start;
   min-height: 20rem;
   cursor: pointer;
+}
+
+#cardWord {
+  order: -1;
+  margin-top: 0.2rem;
 }
 
 .flashcard h2,
