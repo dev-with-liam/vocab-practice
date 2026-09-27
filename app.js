@@ -52,6 +52,16 @@ const wordPartEntries = [
   ["stem", "ject", "to throw", ["eject", "reject", "project"]],
   ["stem", "rupt", "to break", ["erupt", "rupture", "interrupt"]],
   ["stem", "struct", "to build", ["construct", "structure", "instruct"]],
+  ["stem", "cap/cept", "to take or receive", ["capture", "accept", "intercept"]],
+  ["stem", "cred", "to believe", ["credible", "credit", "incredible"]],
+  ["stem", "dict", "to say or tell", ["dictate", "predict", "dictionary"]],
+  ["stem", "fac/fact", "to make or do", ["factory", "manufacture", "artifact"]],
+  ["stem", "graph", "to write or draw", ["autograph", "paragraph", "graphic"]],
+  ["stem", "man", "hand", ["manual", "manage", "manuscript"]],
+  ["stem", "mit/miss", "to send", ["transmit", "dismiss", "mission"]],
+  ["stem", "ped", "foot", ["pedal", "pedestrian", "pedicure"]],
+  ["stem", "press", "to push", ["pressure", "compress", "impress"]],
+  ["stem", "tract", "to pull or draw", ["tractor", "attract", "subtract"]],
 ].map(([type, part, meaning, examples]) => ({ type, part, meaning, examples }));
 
 const antonymHints = {
