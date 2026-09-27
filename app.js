@@ -1080,6 +1080,9 @@ function openApp(mode = "flashcards", partFilter = "") {
 
 function showHome() {
   stopSpeedTimer();
+  if (document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
   document.body.classList.add("home-active");
 }
 
