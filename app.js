@@ -64,6 +64,21 @@ const wordPartEntries = [
   ["stem", "tract", "to pull or draw", ["tractor", "attract", "subtract"]],
 ].map(([type, part, meaning, examples]) => ({ type, part, meaning, examples }));
 
+const testStemEntries = (window.TEST_STEM_ROWS || "")
+  .trim()
+  .split("\n")
+  .filter(Boolean)
+  .map((row, index) => {
+    const [part, meaning] = row.split("|");
+    return {
+      type: "stem",
+      part,
+      meaning,
+      examples: [],
+      listNumber: Math.floor(index / 25) + 1,
+    };
+  });
+
 const antonymHints = {
   abundant: ["scarce", "limited", "lacking"],
   agree: ["disagree", "oppose", "argue"],
@@ -431,6 +446,9 @@ function renderVaultStats(category, shownCount) {
 }
 
 function currentWordParts() {
+  if (state.partFilter === "stem" && testStemEntries.length) {
+    return testStemEntries;
+  }
   return wordPartEntries.filter((entry) => entry.type === state.partFilter);
 }
 
@@ -980,19 +998,25 @@ function renderRoots() {
   entries.forEach((entry) => {
     const item = document.createElement("article");
     item.className = "root-card";
+    const meta = entry.listNumber ? `List ${entry.listNumber}` : entry.type;
+    const examples = entry.examples?.length
+      ? `
+        <p>Examples</p>
+        <ul class="root-examples">
+          ${entry.examples.map((example) => `<li>${example}</li>`).join("")}
+        </ul>
+      `
+      : "";
     item.innerHTML = `
       <div class="root-face root-front">
-        <span>${entry.type}</span>
+        <span>${meta}</span>
         <h3>${entry.part}</h3>
         <p>Tap to reveal meaning</p>
       </div>
       <div class="root-face root-back">
         <span>Meaning</span>
         <h3>${entry.meaning}</h3>
-        <p>Examples</p>
-        <ul class="root-examples">
-          ${entry.examples.map((example) => `<li>${example}</li>`).join("")}
-        </ul>
+        ${examples}
       </div>
     `;
     item.addEventListener("click", () => item.classList.toggle("flipped"));
