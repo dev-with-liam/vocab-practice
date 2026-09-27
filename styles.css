@@ -792,7 +792,7 @@ h1 {
 
 .vault2-toolbar {
   display: grid;
-  grid-template-columns: minmax(10rem, 0.7fr) minmax(16rem, 1.3fr) auto;
+  grid-template-columns: minmax(10rem, 0.7fr) auto minmax(16rem, 1.3fr) auto;
   gap: 0.85rem;
   align-items: end;
   border: 1px solid var(--line);
@@ -972,6 +972,19 @@ h1 {
 
 .roots-toolbar a:hover {
   color: var(--yellow);
+}
+
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+.back-to-game {
+  min-height: 2.55rem;
+  padding: 0.55rem 0.85rem;
 }
 
 .roots-grid {

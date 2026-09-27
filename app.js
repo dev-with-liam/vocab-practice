@@ -64,20 +64,25 @@ const wordPartEntries = [
   ["stem", "tract", "to pull or draw", ["tractor", "attract", "subtract"]],
 ].map(([type, part, meaning, examples]) => ({ type, part, meaning, examples }));
 
-const testStemEntries = (window.TEST_STEM_ROWS || "")
-  .trim()
-  .split("\n")
-  .filter(Boolean)
-  .map((row, index) => {
-    const [part, meaning] = row.split("|");
-    return {
-      type: "stem",
-      part,
-      meaning,
-      examples: [],
-      listNumber: Math.floor(index / 25) + 1,
-    };
-  });
+function testWordPartEntries(type) {
+  return (window.TEST_STEM_ROWS || "")
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((row, index) => {
+      const [part, meaning] = row.split("|");
+      return {
+        type,
+        part,
+        meaning,
+        examples: [],
+        listNumber: Math.floor(index / 25) + 1,
+      };
+    });
+}
+
+const testRootEntries = testWordPartEntries("root");
+const testStemEntries = testWordPartEntries("stem");
 
 const antonymHints = {
   abundant: ["scarce", "limited", "lacking"],
@@ -196,6 +201,7 @@ const state = {
 const els = {
   setButtons: document.querySelector("#setButtons"),
   modeButtons: document.querySelectorAll(".mode-button"),
+  backButtons: document.querySelectorAll(".back-to-game"),
   themeButtons: document.querySelectorAll(".theme-button"),
   masteredCount: document.querySelector("#masteredCount"),
   streakCount: document.querySelector("#streakCount"),
@@ -446,6 +452,9 @@ function renderVaultStats(category, shownCount) {
 }
 
 function currentWordParts() {
+  if (state.partFilter === "root" && testRootEntries.length) {
+    return testRootEntries;
+  }
   if (state.partFilter === "stem" && testStemEntries.length) {
     return testStemEntries;
   }
@@ -1069,6 +1078,7 @@ function setup() {
   });
 
   els.modeButtons.forEach((button) => button.addEventListener("click", () => switchMode(button.dataset.mode)));
+  els.backButtons.forEach((button) => button.addEventListener("click", () => switchMode("flashcards")));
   els.themeButtons.forEach((button) => button.addEventListener("click", () => setTheme(button.dataset.theme)));
   els.missedOnly.addEventListener("change", refreshScope);
   els.shuffleCards.addEventListener("change", refreshScope);
