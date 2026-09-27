@@ -147,6 +147,28 @@ button.danger {
   background: linear-gradient(135deg, var(--yellow), var(--cyan));
 }
 
+.bottom-left-link {
+  position: fixed;
+  left: clamp(0.75rem, 3vw, 1.5rem);
+  bottom: clamp(0.75rem, 3vw, 1.5rem);
+  z-index: 20;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.7rem 0.95rem;
+  color: var(--ink);
+  background: var(--panel-strong);
+  box-shadow: var(--shadow);
+  font-weight: 850;
+  text-decoration: none;
+  backdrop-filter: blur(18px);
+}
+
+.bottom-left-link:hover,
+.bottom-left-link.active {
+  color: #06131d;
+  background: linear-gradient(135deg, var(--yellow), var(--cyan));
+}
+
 body.home-active .topbar,
 body.home-active .app-shell {
   display: none;
