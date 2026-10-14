@@ -4,9 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Architecture - Word Quest</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20261013c">
+    <link rel="stylesheet" href="practice.css?v=20261013c">
   </head>
   <body>
+    <script src="theme.js?v=20261013c"></script>
     <header class="topbar">
       <div>
         <p class="eyebrow">How it works</p>
@@ -17,7 +19,11 @@
         <a class="nav-link" href="index.html">Practice</a>
         <a class="nav-link active" href="architecture.html">Architecture</a>
         <a class="nav-link" href="https://github.com/dev-with-liam/vocab-practice">GitHub</a>
-      </nav>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+            <button class="theme-button" data-theme="light" type="button" aria-pressed="false">☀ Light</button>
+            <button class="theme-button" data-theme="dark" type="button" aria-pressed="false">☾ Dark</button>
+          </div>
+        </nav>
     </header>
 
     <main class="about-shell">
@@ -53,7 +59,7 @@
           <article class="interest-card">
             <span>05</span>
             <h3>App State</h3>
-            <p>The state object remembers the selected test category, current mode, current card, theme, quiz round, and user progress.</p>
+            <p>The state object remembers the selected exam, activity, current round, and user progress. A shared theme script keeps appearance consistent across pages.</p>
           </article>
           <article class="interest-card">
             <span>06</span>
@@ -69,7 +75,7 @@
           <article class="interest-card">
             <span>07</span>
             <h3>Home Screen</h3>
-            <p>The app starts on the home screen. When a user clicks a start button, JavaScript opens the main practice interface.</p>
+            <p>The home screen offers a guided daily session with up to 10 new words and scheduled reviews. Unfinished sessions can be resumed, and completed sessions show a results summary.</p>
           </article>
           <article class="interest-card">
             <span>08</span>
@@ -79,7 +85,7 @@
           <article class="interest-card">
             <span>09</span>
             <h3>Saved Progress</h3>
-            <p>Progress is saved in the browser with localStorage, so mastered words, missed words, streaks, and theme choices can stay after reloading.</p>
+            <p>Progress is saved in the browser with localStorage. The learning module tracks XP, mastery, review dates, and sessions. XP is earned once per word per day; mastery takes three successful recall days.</p>
           </article>
         </div>
       </section>

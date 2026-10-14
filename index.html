@@ -4,11 +4,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Word Quest</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20261013e">
+    <link rel="stylesheet" href="practice.css?v=20261013e">
   </head>
   <body class="home-active">
+    <script src="theme.js?v=20261013c"></script>
     <section id="homeScreen" class="home-screen" aria-labelledby="homeTitle">
       <div class="home-panel">
+        <div class="home-toolbar">
+          <span class="home-brand">WQ <span>Make every word count.</span></span>
+          <div class="theme-switch" role="group" aria-label="Color theme">
+            <button class="theme-button secondary" data-theme="light" type="button" aria-pressed="false">☀ Light</button>
+            <button class="theme-button secondary" data-theme="dark" type="button" aria-pressed="true">☾ Dark</button>
+          </div>
+        </div>
         <div class="home-copy">
           <p class="eyebrow">Vocabulary adventure</p>
           <h1 id="homeTitle">Word Quest</h1>
@@ -16,7 +25,13 @@
         </div>
 
         <div class="home-actions" aria-label="Home menu">
-          <button class="home-start" data-start-mode="flashcards" type="button">Start Learning</button>
+          <label class="daily-category" for="dailyCategory">Your exam
+            <select id="dailyCategory"><option>HSPT</option><option>ISEE</option><option>SSAT</option></select>
+          </label>
+          <button id="dailyStart" class="home-start" data-start-mode="daily" type="button">Practice 10 words</button>
+          <p id="dailyPreview" class="daily-preview"></p>
+          <p id="dailyCoverage" class="daily-preview"></p>
+          <button class="secondary home-start" data-start-mode="flashcards" type="button">Explore flashcards</button>
           <button class="secondary home-start" data-start-mode="speed" type="button">Speed Round</button>
           <button class="secondary home-start" data-start-mode="list" type="button">Word Vault</button>
           <button class="secondary home-start" data-start-mode="roots" data-part-filter="root" type="button">Word Parts</button>
@@ -24,9 +39,9 @@
         </div>
 
         <div class="home-progress" aria-label="Progress preview">
-          <span><small>XP</small><strong id="homeMasteredCount">0</strong></span>
-          <span><small>Combo</small><strong id="homeStreakCount">0</strong></span>
-          <span><small>Modes</small><strong>9</strong></span>
+          <span><small>Total XP</small><strong id="homeXpCount">0</strong></span>
+          <span><small>Mastered</small><strong id="homeMasteredCount">0</strong></span>
+          <span><small>Review due</small><strong id="homeDueCount">0</strong></span>
         </div>
 
         <div id="tutorialPanel" class="tutorial-panel" hidden>
@@ -35,10 +50,10 @@
             <button id="hideTutorial" class="secondary" type="button">Close</button>
           </div>
           <ol>
-            <li>Start with Flip to learn each word and reveal its clues.</li>
+            <li>Start with Practice 10 words for a mix of new words and scheduled reviews.</li>
             <li>Use Synonyms, Opposites, and mini-games to test yourself.</li>
             <li>Open Word Parts for prefixes, suffixes, roots, and stems.</li>
-            <li>Mark words as Got It or Need Practice to track progress.</li>
+            <li>Earn 10 XP per word answered correctly each day. Recall a word on three separate days to master it.</li>
           </ol>
         </div>
       </div>
@@ -46,9 +61,9 @@
 
     <header class="topbar">
       <div>
-        <p class="eyebrow">380-word challenge</p>
+        <p id="catalogCount" class="eyebrow">Vocabulary practice</p>
         <h1>Word Quest</h1>
-        <p class="tagline">ISEE, HSPT, and ISEE practice.</p>
+        <p class="tagline">HSPT, ISEE, and SSAT practice.</p>
       </div>
       <div class="top-actions">
         <nav class="site-nav" aria-label="Site pages">
@@ -56,79 +71,70 @@
           <a class="nav-link active" href="index.html">Practice</a>
           <a class="nav-link" href="architecture.html">Architecture</a>
           <a class="nav-link" href="https://github.com/dev-with-liam/vocab-practice">GitHub</a>
+        <div class="theme-switch" role="group" aria-label="Color theme">
+            <button class="theme-button" data-theme="light" type="button" aria-pressed="false">☀ Light</button>
+            <button class="theme-button" data-theme="dark" type="button" aria-pressed="false">☾ Dark</button>
+          </div>
         </nav>
         <div class="stats" aria-label="Study progress">
-          <span><small>XP</small><strong id="masteredCount">0</strong></span>
-          <span><small>Combo</small><strong id="streakCount">0</strong></span>
+          <span><small>XP</small><strong id="xpCount">0</strong></span>
+          <span><small>Mastered</small><strong id="masteredCount">0</strong></span>
+          <span><small>Review due</small><strong id="dueCount">0</strong></span>
         </div>
       </div>
     </header>
 
     <main class="app-shell">
       <aside class="sidebar" aria-label="Study controls">
-        <section>
-          <h2>Word Categories</h2>
+        <nav class="study-nav" aria-label="Study activities">
+          <details class="nav-group" data-group="learn" open>
+            <summary>Learn</summary>
+            <div class="nav-items">
+              <button class="mode-button active" data-mode="flashcards" type="button">Flashcards</button>
+              <button class="mode-button" data-mode="roots" type="button">Word Parts</button>
+              <button class="mode-button" data-mode="list" type="button">Word Vault</button>
+            </div>
+          </details>
+          <details class="nav-group" data-group="practice">
+            <summary>Practice</summary>
+            <div class="nav-items">
+              <button class="mode-button" data-mode="daily" type="button">Daily session</button>
+              <button class="mode-button" data-mode="quiz" type="button">Synonyms</button>
+              <button class="mode-button" data-mode="opposites" type="button">Opposites</button>
+            </div>
+          </details>
+          <details class="nav-group" data-group="games">
+            <summary>Games</summary>
+            <div class="nav-items">
+              <button class="mode-button" data-mode="match" type="button">Match</button>
+              <button class="mode-button" data-mode="sort" type="button">Sort</button>
+              <button class="mode-button" data-mode="scramble" type="button">Scramble</button>
+              <button class="mode-button" data-mode="speed" type="button">Speed Round</button>
+              <button class="mode-button" data-mode="pop" type="button">Word Pop</button>
+            </div>
+          </details>
+        </nav>
+        <section id="scopeControls">
+          <h2>Your exam</h2>
           <div id="setButtons" class="set-grid"></div>
+          <label class="check-row"><input id="missedOnly" type="checkbox"><span>Focus on unmastered words</span></label>
+          <label id="shuffleControl" class="check-row"><input id="shuffleCards" type="checkbox" checked><span>Shuffle flashcards</span></label>
         </section>
-
-        <section>
-          <h2>Challenge</h2>
-          <div class="segmented" role="tablist" aria-label="Practice mode">
-            <button class="mode-button active" data-mode="flashcards" type="button">Flip</button>
-            <button class="mode-button" data-mode="quiz" type="button">Synonyms</button>
-            <button class="mode-button" data-mode="opposites" type="button">Opposites</button>
-            <button class="mode-button" data-mode="list" type="button">Vault</button>
-          </div>
-        </section>
-
-        <section>
-          <h2>Word Parts</h2>
-          <div class="segmented" role="tablist" aria-label="Word parts">
-            <button class="part-mode-button active" data-part-filter="prefix" type="button">Prefixes</button>
-            <button class="part-mode-button" data-part-filter="suffix" type="button">Suffixes</button>
-            <button class="part-mode-button" data-part-filter="root" type="button">Roots</button>
-            <button class="part-mode-button" data-part-filter="stem" type="button">Stems</button>
-          </div>
-        </section>
-
-        <section>
-          <h2>Mini-games</h2>
-          <div class="segmented" role="tablist" aria-label="Mini-games">
-            <button class="mode-button" data-mode="match" type="button">Match</button>
-            <button class="mode-button" data-mode="sort" type="button">Sort</button>
-            <button class="mode-button" data-mode="scramble" type="button">Scramble</button>
-            <button class="mode-button" data-mode="speed" type="button">Speed</button>
-            <button class="mode-button" data-mode="pop" type="button">Word Pop</button>
-          </div>
-        </section>
-
-        <section>
-          <h2>Power-ups</h2>
-          <label class="check-row">
-            <input id="missedOnly" type="checkbox">
-            <span>Train weak words</span>
-          </label>
-          <label class="check-row">
-            <input id="shuffleCards" type="checkbox" checked>
-            <span>Random rounds</span>
-          </label>
-        </section>
-
-        <section>
-          <h2>Appearance</h2>
-          <div class="segmented" role="tablist" aria-label="Theme">
-            <button class="theme-button active" data-theme="dark" type="button">Dark</button>
-            <button class="theme-button" data-theme="light" type="button">Light</button>
-          </div>
-        </section>
-
-        <section>
-          <h2>Save Data</h2>
+        <details class="progress-help">
+          <summary>How progress works</summary>
+          <p><strong>XP:</strong> 10 points for a correct answer or “Got It,” once per word per day.</p>
+          <p><strong>Mastered:</strong> three successful recalls on separate days. A missed answer starts that word’s mastery count again.</p>
+          <p><strong>Review:</strong> words return after 1, 3, 7, 14, then 30 days. Missed words return tomorrow. Existing mastered words keep their status and are ready for review.</p>
+        </details>
+        <details class="progress-help">
+          <summary>Saved progress</summary>
+          <p>Your progress is saved in this browser.</p>
           <div class="tool-grid">
             <button id="resetProgress" class="secondary" type="button">Reset</button>
             <button id="exportProgress" class="secondary" type="button">Copy</button>
           </div>
-        </section>
+        </details>
+        <p id="saveNotice" class="save-notice" role="status" hidden></p>
       </aside>
 
       <section class="workspace">
@@ -140,6 +146,34 @@
           </div>
           <div class="bar" aria-hidden="true"><span id="progressBar"></span></div>
         </div>
+
+        <section id="dailyPanel" class="panel" aria-labelledby="dailyTitle">
+          <div class="daily-heading">
+            <p id="dailyMeta" class="card-meta">Your daily practice</p>
+            <h2 id="dailyTitle" tabindex="-1">A little practice. Lasting progress.</h2>
+            <p id="dailyDescription" class="sentence"></p>
+          </div>
+          <div id="dailyRound" hidden>
+            <progress id="dailyProgress" max="10" value="0" aria-label="Words answered"></progress>
+            <div class="question-card">
+              <p id="dailyPosition" class="card-meta"></p>
+              <h2 id="dailyQuestion" tabindex="-1"></h2>
+              <div id="dailyOptions" class="options"></div>
+              <p id="dailyFeedback" class="daily-feedback" role="status"></p>
+            </div>
+            <div class="action-row"><button id="dailyNext" type="button" disabled>Next word</button></div>
+            <p class="daily-note">You can leave and resume this session anytime.</p>
+          </div>
+          <div id="dailySummary" hidden>
+            <div id="dailyResultStats" class="session-stats"></div>
+            <div id="dailyMissed"></div>
+            <p id="dailyNextReview" class="sentence"></p>
+            <div class="action-row">
+              <button id="dailyFinish" type="button">Back to home</button>
+              <button id="dailyReviewMissed" class="secondary" type="button" hidden>Review missed words</button>
+            </div>
+          </div>
+        </section>
 
         <section id="flashcardsPanel" class="panel active" aria-live="polite">
           <div class="card-stage">
@@ -290,7 +324,13 @@
               <button class="secondary back-to-game" type="button">Back</button>
             </div>
           </div>
-          <div id="rootsGrid" class="roots-grid"></div>
+          <div class="part-filters" role="group" aria-label="Word parts">
+              <button class="part-mode-button active" data-part-filter="prefix" type="button">Prefixes</button>
+              <button class="part-mode-button" data-part-filter="suffix" type="button">Suffixes</button>
+              <button class="part-mode-button" data-part-filter="root" type="button">Roots</button>
+              <button class="part-mode-button" data-part-filter="stem" type="button">Stems</button>
+            </div>
+            <div id="rootsGrid" class="roots-grid"></div>
         </section>
       </section>
     </main>
@@ -301,6 +341,7 @@
     <script src="data/exam-vocabulary.js?v=20260924a"></script>
     <script src="data/hspt-pdf-vocabulary.js?v=20260924a"></script>
     <script src="data/test-stems.js?v=20260926a"></script>
-    <script src="app.js?v=20260926f"></script>
+    <script src="learning.js?v=20261013e"></script>
+    <script src="app.js?v=20261013e"></script>
   </body>
 </html>

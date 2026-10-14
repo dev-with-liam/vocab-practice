@@ -1,7 +1,9 @@
-const workbookWords = window.VOCABULARY_WORDS.map((word) => ({ source: "HSPT", ...word }));
-const allWords = shuffle([...workbookWords, ...(window.EXAM_VOCABULARY_WORDS || [])]);
-const vaultPdfWords = (window.HSPT_PDF_VOCABULARY_WORDS || []).map((word) => ({ ...word, source: "HSPT" }));
-const vaultWords = [...allWords, ...vaultPdfWords];
+// Every study activity and the vault use the same complete catalog.
+// Preserve source/set/number IDs so existing progress still matches its entries.
+const workbookWords = window.VOCABULARY_WORDS.map((word) => ({ ...word, source: "HSPT" }));
+const extendedHsptWords = (window.HSPT_PDF_VOCABULARY_WORDS || []).map((word) => ({ ...word, source: "HSPT" }));
+const allWords = shuffle([...workbookWords, ...(window.EXAM_VOCABULARY_WORDS || []), ...extendedHsptWords]);
+const vaultWords = allWords;
 const categories = ["HSPT", "ISEE", "SSAT"];
 const wordPartEntries = [
   ["prefix", "anti", "against", ["antiperspirant", "antibody", "antithesis"]],
@@ -183,7 +185,6 @@ const antonymHints = {
 const state = {
   category: "HSPT",
   mode: "flashcards",
-  theme: loadTheme(),
   order: [],
   index: 0,
   revealed: false,
@@ -208,12 +209,13 @@ const els = {
   hideTutorial: document.querySelector("#hideTutorial"),
   tutorialPanel: document.querySelector("#tutorialPanel"),
   homeMasteredCount: document.querySelector("#homeMasteredCount"),
-  homeStreakCount: document.querySelector("#homeStreakCount"),
+  homeXpCount: document.querySelector("#homeXpCount"),
+  homeDueCount: document.querySelector("#homeDueCount"),
   modeButtons: document.querySelectorAll(".mode-button"),
   backButtons: document.querySelectorAll(".back-to-game"),
-  themeButtons: document.querySelectorAll(".theme-button"),
   masteredCount: document.querySelector("#masteredCount"),
-  streakCount: document.querySelector("#streakCount"),
+  xpCount: document.querySelector("#xpCount"),
+  dueCount: document.querySelector("#dueCount"),
   scopeLabel: document.querySelector("#scopeLabel"),
   scopeCount: document.querySelector("#scopeCount"),
   rankLabel: document.querySelector("#rankLabel"),
@@ -221,6 +223,7 @@ const els = {
   missedOnly: document.querySelector("#missedOnly"),
   shuffleCards: document.querySelector("#shuffleCards"),
   panels: {
+    daily: document.querySelector("#dailyPanel"),
     flashcards: document.querySelector("#flashcardsPanel"),
     quiz: document.querySelector("#quizPanel"),
     match: document.querySelector("#matchPanel"),
@@ -299,27 +302,21 @@ const els = {
 };
 
 function loadProgress() {
-  const fallback = { mastered: [], missed: [], streak: 0 };
   try {
-    return { ...fallback, ...JSON.parse(localStorage.getItem("vocab-progress")) };
+    return WordQuestLearning.normalize(JSON.parse(localStorage.getItem("vocab-progress")));
   } catch {
-    return fallback;
+    return WordQuestLearning.normalize();
   }
 }
 
-function loadTheme() {
-  return localStorage.getItem("vocab-theme") || "dark";
-}
-
-function setTheme(theme) {
-  state.theme = theme;
-  document.body.dataset.theme = theme;
-  localStorage.setItem("vocab-theme", theme);
-  els.themeButtons.forEach((button) => button.classList.toggle("active", button.dataset.theme === theme));
-}
-
 function saveProgress() {
-  localStorage.setItem("vocab-progress", JSON.stringify(state.progress));
+  try {
+    localStorage.setItem("vocab-progress", JSON.stringify(state.progress));
+  } catch {
+    const notice = document.querySelector("#saveNotice");
+    notice.hidden = false;
+    notice.textContent = "Progress is available for this visit, but browser storage is unavailable. Use Copy to keep a backup.";
+  }
 }
 
 function wordId(word) {
@@ -422,30 +419,27 @@ function rankName(mastered) {
 }
 
 function setStatus(word, status) {
-  const id = wordId(word);
-  state.progress.mastered = state.progress.mastered.filter((item) => item !== id);
-  state.progress.missed = state.progress.missed.filter((item) => item !== id);
-  if (status === "mastered") {
-    state.progress.mastered.push(id);
-    state.progress.streak += 1;
-  }
-  if (status === "missed") {
-    state.progress.missed.push(id);
-    state.progress.streak = 0;
-  }
+  const earned = WordQuestLearning.recordAnswer(state.progress, wordId(word), status === "mastered");
   saveProgress();
   renderStats();
+  return earned;
 }
 
 function renderStats() {
   const scoped = scopedWords();
   const mastered = scoped.filter((word) => state.progress.mastered.includes(wordId(word))).length;
   els.masteredCount.textContent = String(state.progress.mastered.length);
-  els.streakCount.textContent = String(state.progress.streak);
+  els.xpCount.textContent = String(state.progress.xp);
   els.homeMasteredCount.textContent = String(state.progress.mastered.length);
-  els.homeStreakCount.textContent = String(state.progress.streak);
+  els.homeXpCount.textContent = String(state.progress.xp);
+  const due = allWords.filter(word => state.progress.records[wordId(word)]?.due <= WordQuestLearning.dayKey()).length;
+  els.homeDueCount.textContent = String(due);
+  els.dueCount.textContent = String(due);
+  renderDailyPreview();
   els.scopeLabel.textContent = categoryLabel(state.category);
-  els.scopeCount.textContent = `${scoped.length} word${scoped.length === 1 ? "" : "s"}`;
+  els.scopeCount.textContent = state.mode === "opposites"
+    ? `${scoped.filter(hasAntonymClue).length} of ${scoped.length} entries have opposite clues`
+    : `${scoped.length} study entries`;
   els.rankLabel.textContent = rankName(state.progress.mastered.length);
   els.progressBar.style.width = scoped.length ? `${Math.round((mastered / scoped.length) * 100)}%` : "0%";
 }
@@ -457,7 +451,7 @@ function vaultCategoryWords(category) {
 function renderVaultStats(category, shownCount) {
   const total = vaultCategoryWords(category).length;
   els.scopeLabel.textContent = `${category} Vault`;
-  els.scopeCount.textContent = `${total} word${total === 1 ? "" : "s"}`;
+  els.scopeCount.textContent = `${total} study entries`;
   els.rankLabel.textContent = `${shownCount} shown`;
   els.progressBar.style.width = total ? `${Math.round((shownCount / total) * 100)}%` : "0%";
 }
@@ -529,11 +523,10 @@ function makeQuizQuestion(kind = state.mode === "opposites" ? "antonym" : "synon
   const fallbackWords = kind === "antonym" ? allWords.filter(hasAntonymClue) : allWords;
   const questionWords = words.length ? words : fallbackWords;
   const answer = questionWords[Math.floor(Math.random() * questionWords.length)] || allWords[0];
-  const pool = allWords.filter((word) => wordId(word) !== wordId(answer));
-  const distractors = shuffle(pool).slice(0, 3);
+
   state.currentQuiz = {
     answer,
-    options: shuffle([answer, ...distractors]),
+    options: makeWordOptions(answer),
     answered: false,
     kind,
   };
@@ -583,12 +576,12 @@ function makeMatchRound() {
   const words = gameWords();
   const answer = randomItem(words);
   const target = randomItem(answer.synonyms);
-  const distractors = shuffle(
+  const distractors = shuffle([...new Set(
     allWords
       .filter((word) => wordId(word) !== wordId(answer))
       .flatMap((word) => word.synonyms)
-      .filter((synonym) => synonym !== target)
-  ).slice(0, 5);
+      .filter((synonym) => !answer.synonyms.includes(synonym))
+  )]).slice(0, 5);
   state.currentMatch = {
     answer,
     target,
@@ -699,7 +692,7 @@ function cleanScrambleAnswer(word) {
 }
 
 function makeScrambleRound() {
-  const words = gameWords().filter((word) => word.word.replace(/[^a-z]/gi, "").length <= 12);
+  const words = gameWords();
   const answer = randomItem(words.length ? words : allWords);
   const cleanAnswer = cleanScrambleAnswer(answer.word);
   state.currentScramble = {
@@ -823,9 +816,20 @@ function checkScrambleIfComplete() {
   renderScramble();
 }
 
+function makeWordOptions(answer, count = 4) {
+  const used = new Set([answer.word.trim().toLowerCase()]);
+  const clues = new Set(answer.synonyms.map(clue => clue.trim().toLowerCase()));
+  const distractors = shuffle(allWords).filter(word => {
+    const name = word.word.trim().toLowerCase();
+    if (used.has(name) || word.synonyms.some(clue => clues.has(clue.trim().toLowerCase()))) return false;
+    used.add(name);
+    return true;
+  }).slice(0, count - 1);
+  return shuffle([answer, ...distractors]);
+}
+
 function makeSpeedOptions(answer) {
-  const pool = allWords.filter((word) => wordId(word) !== wordId(answer));
-  return shuffle([answer, ...shuffle(pool).slice(0, 3)]);
+  return makeWordOptions(answer);
 }
 
 function speedSeconds(round) {
@@ -935,11 +939,10 @@ function answerSpeed(selected, button) {
 function makePopRound() {
   const words = gameWords();
   const answer = randomItem(words);
-  const pool = allWords.filter((word) => wordId(word) !== wordId(answer));
   state.currentPop = {
     answer,
     clue: randomItem(answer.synonyms),
-    options: shuffle([answer, ...shuffle(pool).slice(0, 5)]),
+    options: makeWordOptions(answer, 6),
     answered: false,
     score: state.currentPop?.score || 0,
   };
@@ -995,7 +998,7 @@ function renderList() {
   words.forEach((word) => {
     const item = document.createElement("article");
     item.className = "vault2-card";
-    const status = state.progress.mastered.includes(wordId(word)) ? "Mastered" : state.progress.missed.includes(wordId(word)) ? "Missed" : "New";
+    const status = state.progress.mastered.includes(wordId(word)) ? "Mastered" : state.progress.missed.includes(wordId(word)) ? "Needs review" : state.progress.records[wordId(word)] ? "Learning" : "New";
     item.innerHTML = `
       <div class="vault2-card-head">
         <span class="badge">${categoryLabel(word.source)} ${word.set}</span>
@@ -1048,12 +1051,23 @@ function renderRoots() {
 }
 
 function switchMode(mode) {
+  document.querySelector("#scopeControls").hidden = ["daily", "roots", "list"].includes(mode);
+  document.querySelector("#shuffleControl").hidden = mode !== "flashcards";
+  document.querySelector(".progress-strip").hidden = mode === "daily";
+  const group = ["flashcards", "roots", "list"].includes(mode) ? "learn" : ["daily", "quiz", "opposites"].includes(mode) ? "practice" : "games";
+  document.querySelectorAll(".nav-group").forEach(section => { section.open = section.dataset.group === group; });
   if (mode !== "speed") stopSpeedTimer();
   state.mode = mode;
-  els.modeButtons.forEach((button) => button.classList.toggle("active", button.dataset.mode === mode));
+  els.modeButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.mode === mode);
+    if (button.dataset.mode === mode) button.setAttribute("aria-current", "true");
+    else button.removeAttribute("aria-current");
+  });
   Object.entries(els.panels).forEach(([name, panel]) => {
     panel.classList.toggle("active", name === mode || (name === "quiz" && mode === "opposites"));
   });
+  renderStats();
+  if (mode === "daily") startDailySession();
   if (mode === "flashcards") renderFlashcard(true);
   if (mode === "quiz") makeQuizQuestion("synonym");
   if (mode === "opposites") makeQuizQuestion("antonym");
@@ -1071,6 +1085,12 @@ function switchMode(mode) {
 
 function openApp(mode = "flashcards", partFilter = "") {
   document.body.classList.remove("home-active");
+  if (mode === "daily") {
+    if (state.progress.activeSession?.completedAt) state.progress.activeSession = null;
+    state.category = document.querySelector("#dailyCategory").value;
+    syncCategoryButtons();
+    rebuildOrder();
+  }
   if (partFilter) {
     state.partFilter = partFilter;
     els.partButtons.forEach((button) => button.classList.toggle("active", button.dataset.partFilter === partFilter));
@@ -1080,6 +1100,7 @@ function openApp(mode = "flashcards", partFilter = "") {
 
 function showHome() {
   stopSpeedTimer();
+  renderStats();
   if (document.activeElement instanceof HTMLElement) {
     document.activeElement.blur();
   }
@@ -1092,15 +1113,210 @@ function refreshScope() {
   switchMode(state.mode);
 }
 
+function syncCategoryButtons() {
+  els.setButtons.querySelectorAll('button').forEach(button => {
+    button.classList.toggle('active', button.dataset.category === state.category);
+  });
+}
+
+function renderDailyPreview() {
+  const session = state.progress.activeSession;
+  const pending = session && !session.completedAt && session.ids?.length;
+  const category = document.querySelector('#dailyCategory');
+  category.disabled = Boolean(pending);
+  if (pending) category.value = session.category;
+  const selected = WordQuestLearning.selectSession(allWords.filter(w => w.source === category.value), state.progress, wordId);
+  document.querySelector('#dailyStart').textContent = pending ? 'Resume your session' : selected.length ? `Practice ${selected.length} words` : 'View review schedule';
+  const entries = allWords.filter(word => word.source === category.value);
+  const unique = new Set(entries.map(word => word.word.trim().toLowerCase())).size;
+  document.querySelector('#dailyCoverage').textContent = `${entries.length} study entries · ${unique} distinct words. Every entry is included in daily practice.`;
+  const today = state.progress.sessions.filter(session => session.date === WordQuestLearning.dayKey());
+  document.querySelector('#dailyPreview').textContent = pending
+    ? `${session.category} · ${session.results.length} of ${session.ids.length} answered. Pick up where you left off.`
+    : `${category.value} · New words and scheduled reviews.${today.length ? ` ${today.length} session${today.length === 1 ? '' : 's'} completed today.` : ' About 3 minutes.'}`;
+}
+
+function startDailySession() {
+  let session = state.progress.activeSession;
+  // Vocabulary updates must not leave an old saved session unusable.
+  if (session && (!Array.isArray(session.ids) || !session.ids.length || !session.ids.every(id => allWords.some(w => wordId(w) === id)) || !Array.isArray(session.results) || !Number.isInteger(session.index) || session.index < 0 || session.index >= session.ids.length)) {
+    session = null;
+    state.progress.activeSession = null;
+  }
+  if (!session) {
+    const words = WordQuestLearning.selectSession(shuffle(allWords.filter(w => w.source === state.category)), state.progress, wordId);
+    if (!words.length) {
+      renderDailyEmpty();
+      return;
+    }
+    session = {
+      category: state.category,
+      ids: words.map(wordId),
+      newIds: words.filter(w => !state.progress.records[wordId(w)]).map(wordId),
+      index: 0, results: [], xpEarned: 0,
+      startedAt: new Date().toISOString(), completedAt: null,
+    };
+    state.progress.activeSession = session;
+    saveProgress();
+  }
+  const categoryChanged = state.category !== session.category;
+  state.category = session.category;
+  syncCategoryButtons();
+  if (categoryChanged) rebuildOrder();
+  renderDailySession();
+  renderDailyPreview();
+}
+
+function nextReviewText(category) {
+  const records = allWords.filter(w => w.source === category).map(w => state.progress.records[wordId(w)]).filter(Boolean);
+  const next = records.map(r => r.due).sort()[0];
+  if (!next) return 'Your progress will appear here after you practice.';
+  if (next <= WordQuestLearning.dayKey()) return 'More reviews are ready whenever you are.';
+  const [year, month, day] = next.split('-').map(Number);
+  return `Next scheduled review: ${new Date(year, month - 1, day).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}. Missed words return tomorrow.`;
+}
+
+function renderDailyEmpty() {
+  document.querySelector('#dailyMeta').textContent = `${state.category} · Daily practice`;
+  document.querySelector('#dailyTitle').textContent = 'You’re all caught up.';
+  document.querySelector('#dailyDescription').textContent = 'There are no new words or scheduled reviews for this exam right now. You can still explore flashcards or play a game.';
+  document.querySelector('#dailyRound').hidden = true;
+  document.querySelector('#dailySummary').hidden = false;
+  document.querySelector('#dailyResultStats').replaceChildren();
+  document.querySelector('#dailyMissed').replaceChildren();
+  document.querySelector('#dailyNextReview').textContent = nextReviewText(state.category);
+  document.querySelector('#dailyReviewMissed').hidden = true;
+}
+
+function renderDailySession() {
+  const session = state.progress.activeSession;
+  if (session.completedAt) { renderDailySummary(); return; }
+  const word = allWords.find(w => wordId(w) === session.ids[session.index]);
+  const result = session.results[session.index];
+  const isNew = session.newIds.includes(wordId(word));
+  document.querySelector('#dailyMeta').textContent = `${session.category} · Daily practice`;
+  document.querySelector('#dailyTitle').textContent = 'A little practice. Lasting progress.';
+  document.querySelector('#dailyDescription').textContent = `${session.newIds.length} new · ${session.ids.length - session.newIds.length} to review. Take your time—there’s no timer.`;
+  document.querySelector('#dailyRound').hidden = false;
+  document.querySelector('#dailySummary').hidden = true;
+  const progress = document.querySelector('#dailyProgress');
+  progress.max = session.ids.length;
+  progress.value = session.results.length;
+  document.querySelector('#dailyPosition').textContent = `Word ${session.index + 1} of ${session.ids.length} · ${isNew ? 'New word' : 'Review'}`;
+  document.querySelector('#dailyQuestion').textContent = `Which word means “${word.synonyms[0]}”?`;
+  if (!session.options) {
+    session.options = makeWordOptions(word).map(wordId);
+    saveProgress();
+  }
+  const options = document.querySelector('#dailyOptions');
+  options.replaceChildren();
+  session.options.forEach(id => {
+    const option = allWords.find(w => wordId(w) === id);
+    if (!option) return;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = option.word;
+    button.disabled = Boolean(result);
+    if (result && id === wordId(word)) { button.classList.add('correct'); button.textContent += ' · Correct'; }
+    else if (result && id === result.selectedId) { button.classList.add('wrong'); button.textContent += ' · Your answer'; }
+    button.addEventListener('click', () => answerDaily(id));
+    options.append(button);
+  });
+  document.querySelector('#dailyFeedback').textContent = result
+    ? `${result.correct ? 'Correct.' : 'Keep practicing.'} ${word.word}: ${cleanSynonyms(word)}. ${result.earned ? `+${result.earned} XP.` : result.correct ? 'You already earned XP for this word today.' : 'We’ll review this word tomorrow.'}`
+    : '';
+  const next = document.querySelector('#dailyNext');
+  next.disabled = !result;
+  next.textContent = session.index === session.ids.length - 1 ? 'See results' : 'Next word';
+}
+
+function answerDaily(selectedId) {
+  const session = state.progress.activeSession;
+  if (!session || session.completedAt || session.results[session.index]) return;
+  const id = session.ids[session.index];
+  const word = allWords.find(w => wordId(w) === id);
+  const correct = selectedId === id;
+  const earned = setStatus(word, correct ? 'mastered' : 'missed');
+  session.xpEarned += earned;
+  session.results.push({ id, selectedId, correct, earned });
+  saveProgress();
+  renderDailySession();
+  renderDailyPreview();
+  document.querySelector('#dailyNext').focus();
+}
+
+function renderDailySummary() {
+  const session = state.progress.activeSession;
+  document.querySelector('#dailyMeta').textContent = `${session.category} · Session complete`;
+  document.querySelector('#dailyTitle').textContent = 'You showed up. That counts.';
+  document.querySelector('#dailyDescription').textContent = 'Your answers are saved and your next reviews are scheduled.';
+  document.querySelector('#dailyRound').hidden = true;
+  document.querySelector('#dailySummary').hidden = false;
+  const stats = document.querySelector('#dailyResultStats');
+  stats.replaceChildren();
+  for (const [label, value] of [['Correct', `${session.results.filter(r => r.correct).length} / ${session.ids.length}`], ['XP earned', `+${session.xpEarned}`], ['Words reviewed', session.ids.length - session.newIds.length]]) {
+    const item = document.createElement('div');
+    const number = document.createElement('strong'); number.textContent = value;
+    const title = document.createElement('span'); title.textContent = label;
+    item.append(number, title); stats.append(item);
+  }
+  const missed = session.results.filter(r => !r.correct);
+  const container = document.querySelector('#dailyMissed'); container.replaceChildren();
+  const heading = document.createElement('h3'); heading.textContent = missed.length ? 'A few words to revisit' : 'Every word recalled. Nicely done.'; container.append(heading);
+  if (missed.length) {
+    const list = document.createElement('ul');
+    for (const result of missed) {
+      const word = allWords.find(w => wordId(w) === result.id);
+      const item = document.createElement('li'); item.textContent = `${word.word} — ${cleanSynonyms(word)}`; list.append(item);
+    }
+    container.append(list);
+  }
+  document.querySelector('#dailyNextReview').textContent = nextReviewText(session.category);
+  document.querySelector('#dailyReviewMissed').hidden = !missed.length;
+}
+
+function setupDailySession() {
+  document.querySelector('#dailyCategory').addEventListener('change', renderDailyPreview);
+  document.querySelector('#dailyNext').addEventListener('click', () => {
+    const session = state.progress.activeSession;
+    if (!session || session.completedAt || !session.results[session.index]) return;
+    if (session.index === session.ids.length - 1) {
+      session.completedAt = new Date().toISOString();
+      state.progress.sessions.push({ date: WordQuestLearning.dayKey(), category: session.category, correct: session.results.filter(r => r.correct).length, total: session.ids.length, xp: session.xpEarned });
+      state.progress.sessions = state.progress.sessions.slice(-30);
+    } else {
+      session.index += 1;
+      session.options = null;
+    }
+    saveProgress();
+    renderDailySession();
+    renderStats();
+    document.querySelector(session.completedAt ? '#dailyTitle' : '#dailyQuestion').focus();
+  });
+  document.querySelector('#dailyFinish').addEventListener('click', showHome);
+  document.querySelector('#dailyReviewMissed').addEventListener('click', () => {
+    const session = state.progress.activeSession;
+    state.category = session.category;
+    syncCategoryButtons();
+    state.order = session.results.filter(r => !r.correct).map(r => allWords.find(w => wordId(w) === r.id));
+    state.index = 0;
+    state.revealed = false;
+    switchMode('flashcards');
+  });
+}
+
 function setup() {
+  document.querySelector("#catalogCount").textContent = `${allWords.length} study entries`;
   categories.forEach((category) => {
     const button = document.createElement("button");
     button.type = "button";
     button.textContent = categoryLabel(category);
     button.title = categoryLabel(category);
+    button.dataset.category = category;
     button.classList.toggle("active", category === state.category);
     button.addEventListener("click", () => {
       state.category = category;
+      document.querySelector("#dailyCategory").value = category;
       els.setButtons.querySelectorAll("button").forEach((item) => item.classList.remove("active"));
       button.classList.add("active");
       refreshScope();
@@ -1120,7 +1336,6 @@ function setup() {
   els.hideTutorial.addEventListener("click", () => {
     els.tutorialPanel.hidden = true;
   });
-  els.themeButtons.forEach((button) => button.addEventListener("click", () => setTheme(button.dataset.theme)));
   els.missedOnly.addEventListener("change", refreshScope);
   els.shuffleCards.addEventListener("change", refreshScope);
   els.flashcard.addEventListener("click", () => {
@@ -1188,7 +1403,8 @@ function setup() {
   });
   els.searchWords.addEventListener("input", renderList);
   els.resetProgress.addEventListener("click", () => {
-    state.progress = { mastered: [], missed: [], streak: 0 };
+    if (!window.confirm("Reset all XP, mastery, reviews, and saved sessions in this browser?")) return;
+    state.progress = WordQuestLearning.normalize();
     saveProgress();
     refreshScope();
   });
@@ -1199,8 +1415,8 @@ function setup() {
     setTimeout(() => (els.exportProgress.textContent = "Copy"), 1200);
   });
 
+  setupDailySession();
   refreshScope();
-  setTheme(state.theme);
   showHome();
 }
 
