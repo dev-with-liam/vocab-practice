@@ -21,7 +21,7 @@ window.VOCABULARY_WORDS = [
       "succinct",
       "clear"
     ],
-    "example": "Her concise explanation made the complex concept easy to understand."
+    "example": "Instead of a whole page, Ben wrote a concise answer in two clear sentences."
   },
   {
     "set": 1,
@@ -33,7 +33,7 @@ window.VOCABULARY_WORDS = [
       "soothe",
       "appease"
     ],
-    "example": "He tried to pacify the angry crowd with a heartfelt speech."
+    "example": "Dad tried to pacify the crying toddler by giving her a favorite toy."
   },
   {
     "set": 1,
@@ -45,7 +45,7 @@ window.VOCABULARY_WORDS = [
       "massive",
       "immense"
     ],
-    "example": "The athlete's prodigious talent made her a standout in every competition."
+    "example": "The library had a prodigious collection of books that filled three floors."
   },
   {
     "set": 1,
@@ -57,7 +57,7 @@ window.VOCABULARY_WORDS = [
       "straightforward",
       "frank"
     ],
-    "example": "She gave a candid response when asked about her opinion on the new policy."
+    "example": "When I asked for a candid opinion, Mia admitted that my joke was not funny."
   },
   {
     "set": 1,
@@ -69,7 +69,7 @@ window.VOCABULARY_WORDS = [
       "detailed",
       "complicated"
     ],
-    "example": "The intricate design of the clock was a work of art."
+    "example": "The intricate model castle had tiny stairs, windows, and doors that opened."
   },
   {
     "set": 1,
@@ -93,7 +93,7 @@ window.VOCABULARY_WORDS = [
       "hate",
       "abhor"
     ],
-    "example": "He loathes the idea of working on weekends, preferring to spend time with his family."
+    "example": "I loathe washing slimy dishes so much that I offer to sweep the floor instead."
   },
   {
     "set": 1,
@@ -105,7 +105,7 @@ window.VOCABULARY_WORDS = [
       "capricious",
       "unpredictable"
     ],
-    "example": "The teacher's grading seemed arbitrary, with no clear pattern to how students were assessed."
+    "example": "The captain made an arbitrary choice, picking a team name without any reason."
   },
   {
     "set": 1,
@@ -117,7 +117,7 @@ window.VOCABULARY_WORDS = [
       "perfect",
       "spotless"
     ],
-    "example": "His impeccable manners made him a favorite among his colleagues."
+    "example": "Mia's spelling was impeccable: she spelled all twenty words correctly."
   },
   {
     "set": 1,
@@ -129,7 +129,7 @@ window.VOCABULARY_WORDS = [
       "daring",
       "fearless"
     ],
-    "example": "The audacious plan to climb the highest peak in the world impressed everyone."
+    "example": "Our audacious goal was to build a cardboard boat that could carry a person."
   },
   {
     "set": 1,
@@ -141,7 +141,7 @@ window.VOCABULARY_WORDS = [
       "surface-level",
       "external"
     ],
-    "example": "His understanding of the problem was superficial, lacking depth and detail."
+    "example": "Ben gave the room a superficial cleaning, hiding the mess under his bed."
   },
   {
     "set": 1,
@@ -189,7 +189,7 @@ window.VOCABULARY_WORDS = [
       "self-important",
       "pretentious"
     ],
-    "example": "His pompous attitude made it difficult for others to work with him."
+    "example": "The pompous captain bragged that nobody on the team was as important as he was."
   },
   {
     "set": 1,
@@ -213,7 +213,7 @@ window.VOCABULARY_WORDS = [
       "careful",
       "prudent"
     ],
-    "example": "She was discreet in handling the sensitive matter, ensuring no one was hurt."
+    "example": "Mia was discreet about the surprise party and only discussed it when Ben was away."
   },
   {
     "set": 1,
@@ -225,7 +225,7 @@ window.VOCABULARY_WORDS = [
       "inspect",
       "analyze"
     ],
-    "example": "The lawyer scrutinized the evidence to find any inconsistencies in the case."
+    "example": "We had to scrutinize each puzzle piece to find the tiny bit of red we needed."
   },
   {
     "set": 1,
@@ -273,7 +273,7 @@ window.VOCABULARY_WORDS = [
       "protest",
       "objection"
     ],
-    "example": "The employees filed a grievance about the poor working conditions in the office."
+    "example": "Our grievance was that the older kids took every turn on the swings."
   },
   {
     "set": 2,
@@ -285,7 +285,7 @@ window.VOCABULARY_WORDS = [
       "warm",
       "polite"
     ],
-    "example": "They exchanged cordial greetings at the start of the meeting, setting a positive tone."
+    "example": "Our new neighbor gave us a cordial greeting, smiling and inviting us inside."
   },
   {
     "set": 2,
@@ -297,7 +297,7 @@ window.VOCABULARY_WORDS = [
       "ineffective",
       "hopeless"
     ],
-    "example": "Her attempts to convince him were futile, as he had already made up his mind."
+    "example": "Trying to fill a bucket with a hole in the bottom was futile; the water kept escaping."
   },
   {
     "set": 2,
@@ -333,7 +333,7 @@ window.VOCABULARY_WORDS = [
       "trustworthy",
       "reliable"
     ],
-    "example": "The detective provided credible evidence to support his theory."
+    "example": "Her explanation was credible because the muddy paw prints showed that a dog had entered."
   },
   {
     "set": 2,
@@ -345,7 +345,7 @@ window.VOCABULARY_WORDS = [
       "enlarge",
       "enhance"
     ],
-    "example": "The company plans to augment its product line to attract more customers."
+    "example": "We will augment our book collection by adding ten new comics."
   },
   {
     "set": 2,
@@ -357,7 +357,7 @@ window.VOCABULARY_WORDS = [
       "summit",
       "highpoint"
     ],
-    "example": "Winning the championship was the pinnacle of his career."
+    "example": "Winning the school spelling bee was the pinnacle of my year."
   },
   {
     "set": 2,
@@ -369,7 +369,7 @@ window.VOCABULARY_WORDS = [
       "outgoing",
       "friendly"
     ],
-    "example": "His gregarious personality made him popular at social events."
+    "example": "My gregarious cousin talks to everyone and makes new friends at every party."
   },
   {
     "set": 2,
@@ -381,7 +381,7 @@ window.VOCABULARY_WORDS = [
       "aggressive",
       "combative"
     ],
-    "example": "His belligerent attitude during the debate caused tension in the room."
+    "example": "The belligerent player shoved another kid and shouted that he wanted a fight."
   },
   {
     "set": 2,
@@ -393,7 +393,7 @@ window.VOCABULARY_WORDS = [
       "inexperienced",
       "gullible"
     ],
-    "example": "The naive traveler trusted everyone he met, not realizing the dangers around him."
+    "example": "I was naive enough to believe my brother when he said our cat could talk."
   },
   {
     "set": 2,
@@ -441,7 +441,7 @@ window.VOCABULARY_WORDS = [
       "sluggish",
       "lethargic"
     ],
-    "example": "His indolent behavior led to a backlog of work that he had to catch up on later."
+    "example": "The indolent camper stayed in bed while everyone else packed up the tents."
   },
   {
     "set": 2,
@@ -453,7 +453,7 @@ window.VOCABULARY_WORDS = [
       "crucial",
       "urgent"
     ],
-    "example": "It is imperative that you submit your application by the deadline."
+    "example": "It is imperative to bring your ticket; you cannot enter the show without it."
   },
   {
     "set": 2,
@@ -465,7 +465,7 @@ window.VOCABULARY_WORDS = [
       "renew",
       "revitalize"
     ],
-    "example": "A weekend getaway helped to rejuvenate her energy after a stressful workweek."
+    "example": "A snack and a short rest helped rejuvenate the tired hikers before the next climb."
   },
   {
     "set": 2,
@@ -477,7 +477,7 @@ window.VOCABULARY_WORDS = [
       "repetitive",
       "boring"
     ],
-    "example": "The work became monotonous after hours of performing the same tasks without variation."
+    "example": "Copying the same sentence fifty times was monotonous, and I soon grew bored."
   },
   {
     "set": 3,
@@ -489,7 +489,7 @@ window.VOCABULARY_WORDS = [
       "stimulate",
       "encourage"
     ],
-    "example": "The speech was designed to incite the crowd to act."
+    "example": "The team captain tried to incite a protest by urging players to refuse to play."
   },
   {
     "set": 3,
@@ -525,7 +525,7 @@ window.VOCABULARY_WORDS = [
       "progressive",
       "generous"
     ],
-    "example": "She had a liberal outlook on life and always supported new ideas."
+    "example": "Our club has liberal rules that let members try new ideas and choose their own projects."
   },
   {
     "set": 3,
@@ -537,7 +537,7 @@ window.VOCABULARY_WORDS = [
       "prosperous",
       "well-off"
     ],
-    "example": "The affluent businessman donated millions to charity each year."
+    "example": "The affluent family could afford a huge house, a swimming pool, and three cars."
   },
   {
     "set": 3,
@@ -549,7 +549,7 @@ window.VOCABULARY_WORDS = [
       "incite",
       "urge"
     ],
-    "example": "He tried to goad her into responding to the insult."
+    "example": "My brother tried to goad me into racing him by saying I was too slow to win."
   },
   {
     "set": 3,
@@ -561,7 +561,7 @@ window.VOCABULARY_WORDS = [
       "silly",
       "unimportant"
     ],
-    "example": "Her frivolous remarks during the meeting showed a lack of seriousness about the important issue at hand."
+    "example": "Making silly faces during the fire drill was frivolous when we needed to pay attention."
   },
   {
     "set": 3,
@@ -573,7 +573,7 @@ window.VOCABULARY_WORDS = [
       "combative",
       "contentious"
     ],
-    "example": "His quarrelsome nature often caused tension in the group."
+    "example": "The quarrelsome twins argued over the window seat, the music, and even the snacks."
   },
   {
     "set": 3,
@@ -597,7 +597,7 @@ window.VOCABULARY_WORDS = [
       "persuasion",
       "discourse"
     ],
-    "example": "The politician's rhetoric was designed to inspire and unite the crowd."
+    "example": "The candidate used stirring rhetoric about fairness to win votes for class president."
   },
   {
     "set": 3,
@@ -609,7 +609,7 @@ window.VOCABULARY_WORDS = [
       "occurrence",
       "happening"
     ],
-    "example": "The incident at the restaurant caused quite a stir, and everyone was talking about it."
+    "example": "The spilled paint was the only incident that interrupted our quiet art lesson."
   },
   {
     "set": 3,
@@ -633,7 +633,7 @@ window.VOCABULARY_WORDS = [
       "impending",
       "near"
     ],
-    "example": "The storm is imminent, so we need to prepare immediately."
+    "example": "The dark clouds were overhead, so rain seemed imminent and we hurried inside."
   },
   {
     "set": 3,
@@ -645,7 +645,7 @@ window.VOCABULARY_WORDS = [
       "pressure",
       "force"
     ],
-    "example": "He signed the contract under duress and later sought legal advice."
+    "example": "The bully threatened to break Sam's toy, so Sam handed it over under duress."
   },
   {
     "set": 3,
@@ -657,7 +657,7 @@ window.VOCABULARY_WORDS = [
       "conflicting",
       "contradictory"
     ],
-    "example": "His actions were contrary to the company's policies, leading to his dismissal."
+    "example": "Running in the hallway is contrary to our school's rule that everyone must walk."
   },
   {
     "set": 3,
@@ -681,7 +681,7 @@ window.VOCABULARY_WORDS = [
       "competent",
       "expert"
     ],
-    "example": "She is proficient in both Spanish and French, making her an asset to the company."
+    "example": "Leah is proficient at typing; she can type a full page quickly with very few mistakes."
   },
   {
     "set": 3,
@@ -693,7 +693,7 @@ window.VOCABULARY_WORDS = [
       "barrier",
       "hindrance"
     ],
-    "example": "His lack of experience was an impediment to getting the job he wanted."
+    "example": "A fallen tree was an impediment that blocked our way along the trail."
   },
   {
     "set": 3,
@@ -705,7 +705,7 @@ window.VOCABULARY_WORDS = [
       "belittle",
       "talk down to"
     ],
-    "example": "He tended to condescend to his colleagues, making them feel inferior."
+    "example": "Please do not condescend to me by explaining a simple game as if I were a baby."
   },
   {
     "set": 3,
@@ -717,7 +717,7 @@ window.VOCABULARY_WORDS = [
       "inattentive",
       "reckless"
     ],
-    "example": "The worker's negligent attitude led to several mistakes on the project."
+    "example": "The pet sitter was negligent: he forgot to fill the dog's water bowl all day."
   },
   {
     "set": 4,
@@ -765,7 +765,7 @@ window.VOCABULARY_WORDS = [
       "free",
       "release"
     ],
-    "example": "The new law aims to emancipate individuals from oppressive restrictions."
+    "example": "In the story, the new ruler promised to emancipate the enslaved people and let them live freely."
   },
   {
     "set": 4,
@@ -777,7 +777,7 @@ window.VOCABULARY_WORDS = [
       "harmony",
       "unity"
     ],
-    "example": "The two countries signed a treaty to promote peace and concord."
+    "example": "After weeks of arguing, the clubs worked in concord to build one shared tree house."
   },
   {
     "set": 4,
@@ -789,7 +789,7 @@ window.VOCABULARY_WORDS = [
       "passion",
       "fervor"
     ],
-    "example": "Her zeal for helping others was evident in all the volunteer work she did."
+    "example": "Maya showed her zeal for soccer by practicing every afternoon, even in the rain."
   },
   {
     "set": 4,
@@ -801,7 +801,7 @@ window.VOCABULARY_WORDS = [
       "repulsive",
       "abhorrent"
     ],
-    "example": "His detestable behavior made everyone avoid him at the party."
+    "example": "Stealing a younger child's lunch is detestable behavior that hurts someone who needs food."
   },
   {
     "set": 4,
@@ -825,7 +825,7 @@ window.VOCABULARY_WORDS = [
       "content",
       "unconcerned"
     ],
-    "example": "He became complacent in his job, no longer striving for excellence."
+    "example": "After winning twice, our team grew complacent and stopped practicing, so we lost the next game."
   },
   {
     "set": 4,
@@ -837,7 +837,7 @@ window.VOCABULARY_WORDS = [
       "furious",
       "offended"
     ],
-    "example": "She was indignant when she found out she had been unfairly treated."
+    "example": "I felt indignant when I was blamed for a mess I had not made."
   },
   {
     "set": 4,
@@ -861,7 +861,7 @@ window.VOCABULARY_WORDS = [
       "agreement",
       "consent"
     ],
-    "example": "The board gave its assent to the new project proposal after a thorough review."
+    "example": "Mom gave her assent to the sleepover by saying, 'Yes, you may go.'"
   },
   {
     "set": 4,
@@ -873,7 +873,7 @@ window.VOCABULARY_WORDS = [
       "obtain",
       "secure"
     ],
-    "example": "The company worked hard to procure the necessary materials for the project."
+    "example": "We need to procure six cardboard boxes before we can build our model town."
   },
   {
     "set": 4,
@@ -909,7 +909,7 @@ window.VOCABULARY_WORDS = [
       "hatred",
       "spite"
     ],
-    "example": "There was no malice in his heart, even though he was angry."
+    "example": "With malice, the bully hid Leo's backpack because he wanted to upset him."
   },
   {
     "set": 4,
@@ -921,7 +921,7 @@ window.VOCABULARY_WORDS = [
       "support",
       "reinforce"
     ],
-    "example": "To bolster her confidence, she practiced her presentation several times before the big meeting."
+    "example": "My friends' cheers helped bolster my confidence before I stepped onto the stage."
   },
   {
     "set": 4,
@@ -933,7 +933,7 @@ window.VOCABULARY_WORDS = [
       "unyielding",
       "headstrong"
     ],
-    "example": "His obstinate refusal to compromise led to conflicts with his colleagues."
+    "example": "The obstinate player refused to change seats, even when everyone asked politely."
   },
   {
     "set": 4,
@@ -957,7 +957,7 @@ window.VOCABULARY_WORDS = [
       "current",
       "up-to-date"
     ],
-    "example": "Her contemporary design style incorporates sleek lines and minimalism."
+    "example": "Our concert includes contemporary songs that were written this year."
   },
   {
     "set": 5,
@@ -969,7 +969,7 @@ window.VOCABULARY_WORDS = [
       "concealed",
       "hidden"
     ],
-    "example": "The spy carried out a covert mission to gather intelligence from the enemy."
+    "example": "We made a covert plan for Dad's birthday, hiding the gifts and whispering when he was nearby."
   },
   {
     "set": 5,
@@ -993,7 +993,7 @@ window.VOCABULARY_WORDS = [
       "untouched",
       "immaculate"
     ],
-    "example": "The pristine beaches were perfect for a relaxing day by the sea."
+    "example": "My new notebook was pristine, with no marks, bent pages, or stains."
   },
   {
     "set": 5,
@@ -1017,7 +1017,7 @@ window.VOCABULARY_WORDS = [
       "connected",
       "integrated"
     ],
-    "example": "The team was very cohesive, working together seamlessly to win the competition."
+    "example": "Our cohesive team shared the ball and worked together instead of each trying to score alone."
   },
   {
     "set": 5,
@@ -1029,7 +1029,7 @@ window.VOCABULARY_WORDS = [
       "sarcastic",
       "corrosive"
     ],
-    "example": "His caustic remarks during the meeting hurt everyone's feelings."
+    "example": "His caustic comment, 'Even a baby could draw better,' hurt the artist's feelings."
   },
   {
     "set": 5,
@@ -1053,7 +1053,7 @@ window.VOCABULARY_WORDS = [
       "sharp",
       "perceptive"
     ],
-    "example": "His astute observations helped the team solve the problem quickly."
+    "example": "The astute detective noticed that the muddy shoes matched the footprints by the window."
   },
   {
     "set": 5,
@@ -1089,7 +1089,7 @@ window.VOCABULARY_WORDS = [
       "cautious",
       "sensible"
     ],
-    "example": "It’s prudent to save money for unexpected expenses."
+    "example": "It was prudent to pack a flashlight before our hike in case we returned after dark."
   },
   {
     "set": 5,
@@ -1113,7 +1113,7 @@ window.VOCABULARY_WORDS = [
       "customary",
       "standard"
     ],
-    "example": "The wedding ceremony was quite conventional, with all the expected rituals."
+    "example": "We used conventional wrapping paper for most gifts, but wrapped one in a hand-drawn comic."
   },
   {
     "set": 5,
@@ -1149,7 +1149,7 @@ window.VOCABULARY_WORDS = [
       "error",
       "misbelief"
     ],
-    "example": "A common fallacy is the belief that all stereotypes are true."
+    "example": "It is a fallacy to think that being taller always makes someone a better basketball player."
   },
   {
     "set": 5,
@@ -1173,7 +1173,7 @@ window.VOCABULARY_WORDS = [
       "credible",
       "reasonable"
     ],
-    "example": "His explanation of the accident seemed plausible, and no one questioned his version of events."
+    "example": "The cat knocking over the cup was a plausible explanation because we saw it on the table."
   },
   {
     "set": 5,
@@ -1197,7 +1197,7 @@ window.VOCABULARY_WORDS = [
       "clever",
       "sharp"
     ],
-    "example": "The shrewd investor quickly recognized the potential for profit in the market."
+    "example": "The shrewd shopper compared prices at three stores before buying the same game for less."
   },
   {
     "set": 6,
@@ -1209,7 +1209,7 @@ window.VOCABULARY_WORDS = [
       "assess",
       "judge"
     ],
-    "example": "The realtor will appraise the house before listing it for sale."
+    "example": "An expert will appraise my old baseball card to tell me how much it is worth."
   },
   {
     "set": 6,
@@ -1221,7 +1221,7 @@ window.VOCABULARY_WORDS = [
       "personal",
       "private"
     ],
-    "example": "They had an intimate conversation about their dreams and goals."
+    "example": "The two intimate friends trusted each other with secrets they told no one else."
   },
   {
     "set": 6,
@@ -1233,7 +1233,7 @@ window.VOCABULARY_WORDS = [
       "conform",
       "follow"
     ],
-    "example": "The company is required to comply with regulations to avoid penalties."
+    "example": "To comply with the pool rules, we walked instead of running along the wet edge."
   },
   {
     "set": 6,
@@ -1245,7 +1245,7 @@ window.VOCABULARY_WORDS = [
       "criminal",
       "delinquent"
     ],
-    "example": "The miscreant was caught stealing from the store and was quickly apprehended by the police."
+    "example": "The miscreant who smashed the park bench was caught and had to pay for repairs."
   },
   {
     "set": 6,
@@ -1257,7 +1257,7 @@ window.VOCABULARY_WORDS = [
       "explosive",
       "unpredictable"
     ],
-    "example": "The political situation in the region became increasingly volatile, with protests erupting in several cities."
+    "example": "His volatile mood changed from cheerful to furious over a single lost point."
   },
   {
     "set": 6,
@@ -1269,7 +1269,7 @@ window.VOCABULARY_WORDS = [
       "beginning",
       "root"
     ],
-    "example": "The origin of the tradition dates back hundreds of years."
+    "example": "We traced the origin of the muddy footprints to the back door where the dog came in."
   },
   {
     "set": 6,
@@ -1281,7 +1281,7 @@ window.VOCABULARY_WORDS = [
       "intricate",
       "decorated"
     ],
-    "example": "The ornate chandelier added elegance to the room."
+    "example": "The ornate picture frame was covered with carved flowers and tiny gold leaves."
   },
   {
     "set": 6,
@@ -1293,7 +1293,7 @@ window.VOCABULARY_WORDS = [
       "seize",
       "take over"
     ],
-    "example": "The general attempted to usurp the power of the current ruler, staging a military coup."
+    "example": "While the captain was away, Ben tried to usurp her role by declaring himself the new captain."
   },
   {
     "set": 6,
@@ -1305,7 +1305,7 @@ window.VOCABULARY_WORDS = [
       "alert",
       "attentive"
     ],
-    "example": "The security guard remained vigilant throughout the night shift."
+    "example": "The vigilant lifeguard watched every swimmer closely for signs of trouble."
   },
   {
     "set": 6,
@@ -1329,7 +1329,7 @@ window.VOCABULARY_WORDS = [
       "soothe",
       "calm"
     ],
-    "example": "She tried to placate the angry customer by offering a discount on the next purchase."
+    "example": "I tried to placate my angry sister by apologizing and replacing her broken pencil."
   },
   {
     "set": 6,
@@ -1341,7 +1341,7 @@ window.VOCABULARY_WORDS = [
       "intuition",
       "hunch"
     ],
-    "example": "She had a premonition that something was going to go wrong."
+    "example": "Before opening my bag, I had a premonition that my water bottle had leaked."
   },
   {
     "set": 6,
@@ -1353,7 +1353,7 @@ window.VOCABULARY_WORDS = [
       "worried",
       "fearful"
     ],
-    "example": "She felt apprehensive about the upcoming job interview."
+    "example": "I felt apprehensive before my first school play, worrying that I would forget my lines."
   },
   {
     "set": 6,
@@ -1365,7 +1365,7 @@ window.VOCABULARY_WORDS = [
       "difficulty",
       "predicament"
     ],
-    "example": "She found herself in a quandary, unsure whether to accept the job offer or stay at her current position."
+    "example": "I was in a quandary: my best friend's party and my soccer final were at the same time."
   },
   {
     "set": 6,
@@ -1377,7 +1377,7 @@ window.VOCABULARY_WORDS = [
       "united",
       "consistent"
     ],
-    "example": "The decision to approve the new policy was unanimous among the committee members."
+    "example": "The vote was unanimous: every student chose pizza for the class party."
   },
   {
     "set": 6,
@@ -1425,7 +1425,7 @@ window.VOCABULARY_WORDS = [
       "assent",
       "approve"
     ],
-    "example": "I concur with your opinion on the matter."
+    "example": "I concur with Maya that we need more practice; I agree that we are not ready yet."
   },
   {
     "set": 6,
@@ -1449,7 +1449,7 @@ window.VOCABULARY_WORDS = [
       "atypical",
       "irregular"
     ],
-    "example": "The doctor's diagnosis was based on the abnormal test results, which suggested a rare condition."
+    "example": "Snow in the middle of July would be abnormal in our usually hot town."
   },
   {
     "set": 7,
@@ -1497,7 +1497,7 @@ window.VOCABULARY_WORDS = [
       "disparage",
       "criticize"
     ],
-    "example": "It’s unfair to belittle others just to make yourself feel superior."
+    "example": "Do not belittle a beginner by calling their best effort 'baby work.'"
   },
   {
     "set": 7,
@@ -1533,7 +1533,7 @@ window.VOCABULARY_WORDS = [
       "necessary",
       "crucial"
     ],
-    "example": "His skills are indispensable to the success of the project."
+    "example": "The key is indispensable; without it, we cannot open the locked supply box."
   },
   {
     "set": 7,
@@ -1545,7 +1545,7 @@ window.VOCABULARY_WORDS = [
       "inconsistent",
       "unstable"
     ],
-    "example": "His erratic behavior made it difficult to understand his true feelings."
+    "example": "The kite's erratic movements sent it left, then right, then suddenly toward the ground."
   },
   {
     "set": 7,
@@ -1557,7 +1557,7 @@ window.VOCABULARY_WORDS = [
       "harmless",
       "gentle"
     ],
-    "example": "The doctor reassured me that the tumor was benign and not dangerous."
+    "example": "The huge dog looked scary, but its benign nature showed when it gently nuzzled the kitten."
   },
   {
     "set": 7,
@@ -1581,7 +1581,7 @@ window.VOCABULARY_WORDS = [
       "bizarre",
       "unconventional"
     ],
-    "example": "His outlandish ideas made him stand out in the creative meeting."
+    "example": "Wearing a giant banana costume to picture day was an outlandish choice."
   },
   {
     "set": 7,
@@ -1593,7 +1593,7 @@ window.VOCABULARY_WORDS = [
       "guilt",
       "sorrow"
     ],
-    "example": "She felt deep remorse after realizing the mistake she had made."
+    "example": "After breaking her friend's toy on purpose, Mia felt remorse and wished she could undo it."
   },
   {
     "set": 7,
@@ -1605,7 +1605,7 @@ window.VOCABULARY_WORDS = [
       "enraged",
       "angry"
     ],
-    "example": "The irate customer demanded to speak to the manager after receiving poor service."
+    "example": "My sister was irate when I erased her saved game; she shouted and slammed the door."
   },
   {
     "set": 7,
@@ -1665,7 +1665,7 @@ window.VOCABULARY_WORDS = [
       "scorn",
       "disrespect"
     ],
-    "example": "He looked at the rude comment with contempt, unwilling to engage with the negativity."
+    "example": "The bully showed contempt for our project by calling it worthless and laughing at it."
   },
   {
     "set": 7,
@@ -1677,7 +1677,7 @@ window.VOCABULARY_WORDS = [
       "forceful",
       "healthy"
     ],
-    "example": "The team gave a vigorous effort throughout the game, securing a decisive victory."
+    "example": "After a vigorous game of tag, we were all breathing hard and needed a rest."
   },
   {
     "set": 8,
@@ -1689,7 +1689,7 @@ window.VOCABULARY_WORDS = [
       "morose",
       "somber"
     ],
-    "example": "He was in a sullen mood after receiving disappointing news about the project."
+    "example": "After losing the game, Ben sat with a sullen frown and refused to talk."
   },
   {
     "set": 8,
@@ -1701,7 +1701,7 @@ window.VOCABULARY_WORDS = [
       "unremarkable",
       "ordinary"
     ],
-    "example": "The film received mediocre reviews, with many calling it predictable and unoriginal."
+    "example": "The movie was mediocre: it was not terrible, but none of us wanted to watch it again."
   },
   {
     "set": 8,
@@ -1725,7 +1725,7 @@ window.VOCABULARY_WORDS = [
       "standard",
       "value"
     ],
-    "example": "He stood by his principles, refusing to compromise his morals."
+    "example": "Honesty is an important principle to Maya, so she admitted that she broke the window."
   },
   {
     "set": 8,
@@ -1785,7 +1785,7 @@ window.VOCABULARY_WORDS = [
       "rude",
       "impolite"
     ],
-    "example": "His insolent attitude towards the teacher caused him to be sent to the principal's office."
+    "example": "The insolent student rolled his eyes and told the teacher to shut up."
   },
   {
     "set": 8,
@@ -1809,7 +1809,7 @@ window.VOCABULARY_WORDS = [
       "insufficient",
       "inadequate"
     ],
-    "example": "The diet was deficient in essential vitamins, leading to health problems."
+    "example": "Our team was deficient in players, so we needed two more kids before the game could start."
   },
   {
     "set": 8,
@@ -1833,7 +1833,7 @@ window.VOCABULARY_WORDS = [
       "resistant",
       "disobedient"
     ],
-    "example": "His defiant attitude toward the rules caused trouble in class."
+    "example": "The defiant child stared at the 'Keep Off the Grass' sign and stepped onto the lawn anyway."
   },
   {
     "set": 8,
@@ -1845,7 +1845,7 @@ window.VOCABULARY_WORDS = [
       "goodness",
       "righteousness"
     ],
-    "example": "Patience is considered a virtue in many cultures and traditions."
+    "example": "Patience is a virtue that helps you stay calm while a younger child learns a game."
   },
   {
     "set": 8,
@@ -1857,7 +1857,7 @@ window.VOCABULARY_WORDS = [
       "valid",
       "authorized"
     ],
-    "example": "The company’s actions were legitimate and in line with the law."
+    "example": "The signed permission slip gave us a legitimate reason to leave class early."
   },
   {
     "set": 8,
@@ -1905,7 +1905,7 @@ window.VOCABULARY_WORDS = [
       "determine",
       "settle"
     ],
-    "example": "She resolved to work harder and improve her performance at work."
+    "example": "After missing the winning shot, I resolved to practice every day and wrote a schedule to follow."
   },
   {
     "set": 8,
@@ -1917,7 +1917,7 @@ window.VOCABULARY_WORDS = [
       "pompous",
       "arrogant"
     ],
-    "example": "His pretentious attitude at the dinner party made everyone uncomfortable."
+    "example": "His pretentious speech used huge words to make a simple idea sound important."
   },
   {
     "set": 9,
@@ -1941,7 +1941,7 @@ window.VOCABULARY_WORDS = [
       "skilled",
       "proficient"
     ],
-    "example": "The employee was competent in handling all customer inquiries and resolving issues efficiently."
+    "example": "The competent babysitter could prepare dinner, help with homework, and get the kids to bed safely."
   },
   {
     "set": 9,
@@ -1953,7 +1953,7 @@ window.VOCABULARY_WORDS = [
       "highpoint",
       "summit"
     ],
-    "example": "The company reached its zenith in the 1990s, when its products were highly sought after worldwide."
+    "example": "Our team's season reached its zenith when we won the championship."
   },
   {
     "set": 9,
@@ -1965,7 +1965,7 @@ window.VOCABULARY_WORDS = [
       "old-fashioned",
       "picturesque"
     ],
-    "example": "They visited a quaint village tucked away in the countryside."
+    "example": "The quaint little shop had a thatched roof and a bell above its wooden door."
   },
   {
     "set": 9,
@@ -1977,7 +1977,7 @@ window.VOCABULARY_WORDS = [
       "cautious",
       "mindful"
     ],
-    "example": "The driver was heedful of the road conditions during the heavy rainstorm."
+    "example": "Heedful of the slippery-floor sign, we slowed down and walked carefully."
   },
   {
     "set": 9,
@@ -2037,7 +2037,7 @@ window.VOCABULARY_WORDS = [
       "meaningful",
       "insightful"
     ],
-    "example": "His speech had a profound impact on the audience, leaving everyone in deep thought."
+    "example": "Losing her dog caused profound sadness; she missed him every day for months."
   },
   {
     "set": 9,
@@ -2049,7 +2049,7 @@ window.VOCABULARY_WORDS = [
       "precise",
       "thorough"
     ],
-    "example": "She was meticulous in her planning, ensuring every detail was perfect."
+    "example": "Maya was meticulous with her model, checking that every tiny piece was in the right place."
   },
   {
     "set": 9,
@@ -2061,7 +2061,7 @@ window.VOCABULARY_WORDS = [
       "organized",
       "precise"
     ],
-    "example": "The scientist's methodical approach to the experiment led to accurate results."
+    "example": "His methodical cleanup started with books, then toys, then clothes, one group at a time."
   },
   {
     "set": 9,
@@ -2085,7 +2085,7 @@ window.VOCABULARY_WORDS = [
       "combative",
       "oppositional"
     ],
-    "example": "The two competitors were antagonistic, constantly undermining one another."
+    "example": "The antagonistic teammates argued at every practice and refused to pass to each other."
   },
   {
     "set": 9,
@@ -2097,7 +2097,7 @@ window.VOCABULARY_WORDS = [
       "acceptable",
       "justifiable"
     ],
-    "example": "The argument he presented was valid, and it convinced everyone to reconsider their decision."
+    "example": "Your bus ticket is valid until Friday, so you can still use it today."
   },
   {
     "set": 9,
@@ -2109,7 +2109,7 @@ window.VOCABULARY_WORDS = [
       "dull",
       "routine"
     ],
-    "example": "The mundane tasks of everyday life began to feel monotonous after a while."
+    "example": "Putting away socks is a mundane chore that I do every week."
   },
   {
     "set": 9,
@@ -2121,7 +2121,7 @@ window.VOCABULARY_WORDS = [
       "relief",
       "consolation"
     ],
-    "example": "She found solace in reading books after a long day at work."
+    "example": "After my friend moved away, I found solace in our letters, which made me feel less lonely."
   },
   {
     "set": 9,
@@ -2133,7 +2133,7 @@ window.VOCABULARY_WORDS = [
       "luxurious",
       "abundant"
     ],
-    "example": "The wedding reception was a lavish aCair with a gourmet feast and live entertainment."
+    "example": "The lavish party had a giant cake, a live band, and gifts for every guest."
   },
   {
     "set": 9,
@@ -2145,7 +2145,7 @@ window.VOCABULARY_WORDS = [
       "perplex",
       "confuse"
     ],
-    "example": "The complexity of the puzzle continued to confound the team."
+    "example": "The puzzle continued to confound us; we could not figure out where a single piece belonged."
   },
   {
     "set": 9,
@@ -2157,7 +2157,7 @@ window.VOCABULARY_WORDS = [
       "hinder",
       "weaken"
     ],
-    "example": "The storm impaired the city's infrastructure, leaving roads impassable."
+    "example": "A scratched lens can impair your vision by making everything look blurry."
   },
   {
     "set": 10,
@@ -2169,7 +2169,7 @@ window.VOCABULARY_WORDS = [
       "rant",
       "lecture"
     ],
-    "example": "She delivered a tirade about the unfair treatment she had received."
+    "example": "After finding paint on the carpet, Dad launched into a tirade about cleaning up, scolding us for ten minutes."
   },
   {
     "set": 10,
@@ -2181,7 +2181,7 @@ window.VOCABULARY_WORDS = [
       "certain",
       "inescapable"
     ],
-    "example": "It was inevitable that the project would face some delays given the tight deadline."
+    "example": "Once the ice cream fell onto the hot pavement, melting was inevitable."
   },
   {
     "set": 10,
@@ -2193,7 +2193,7 @@ window.VOCABULARY_WORDS = [
       "uncertain",
       "suspicious"
     ],
-    "example": "She gave him a dubious look when he claimed he had completed the project in one day."
+    "example": "I was dubious when Ben claimed he could jump over the school; I did not believe him."
   },
   {
     "set": 10,
@@ -2217,7 +2217,7 @@ window.VOCABULARY_WORDS = [
       "halt",
       "discontinue"
     ],
-    "example": "The company decided to cease production of the outdated product."
+    "example": "When the whistle blows, all play must cease and everyone must stand still."
   },
   {
     "set": 10,
@@ -2229,7 +2229,7 @@ window.VOCABULARY_WORDS = [
       "ethics",
       "morals"
     ],
-    "example": "Her integrity in dealing with clients made her one of the most respected professionals in her field."
+    "example": "Maya showed integrity by returning the money she found, even though nobody saw her pick it up."
   },
   {
     "set": 10,
@@ -2265,7 +2265,7 @@ window.VOCABULARY_WORDS = [
       "knowledgeable",
       "learned"
     ],
-    "example": "The sage advice from the elder helped the village navigate through difficult times."
+    "example": "Grandma's sage advice was to save my game before turning off the computer."
   },
   {
     "set": 10,
@@ -2277,7 +2277,7 @@ window.VOCABULARY_WORDS = [
       "long-winded",
       "loquacious"
     ],
-    "example": "His verbose speech left the audience bored and uninterested."
+    "example": "His verbose answer took five minutes when a simple 'yes' would have been enough."
   },
   {
     "set": 10,
@@ -2301,7 +2301,7 @@ window.VOCABULARY_WORDS = [
       "succeed",
       "flourish"
     ],
-    "example": "The business began to prosper after the new marketing strategy was implemented."
+    "example": "Our lemonade stand began to prosper when more customers came and we earned enough to buy new supplies."
   },
   {
     "set": 10,
@@ -2313,7 +2313,7 @@ window.VOCABULARY_WORDS = [
       "disclose",
       "uncover"
     ],
-    "example": "He refused to divulge any details about the company's financial situation."
+    "example": "Please do not divulge the hiding place; it is a secret until the treasure hunt starts."
   },
   {
     "set": 10,
@@ -2325,7 +2325,7 @@ window.VOCABULARY_WORDS = [
       "frail",
       "flimsy"
     ],
-    "example": "His feeble excuse didn’t convince anyone."
+    "example": "The kitten's feeble legs were too weak to hold it up for long."
   },
   {
     "set": 10,
@@ -2337,7 +2337,7 @@ window.VOCABULARY_WORDS = [
       "diligent",
       "productive"
     ],
-    "example": "Her industrious nature allowed her to juggle multiple projects and still meet deadlines."
+    "example": "While we took a break, the industrious volunteers kept planting until every flower was in the ground."
   },
   {
     "set": 10,
@@ -2349,7 +2349,7 @@ window.VOCABULARY_WORDS = [
       "admire",
       "honor"
     ],
-    "example": "The community revered the old professor for his wisdom and guidance."
+    "example": "The students revere their former coach, inviting her back each year to thank her for teaching them."
   },
   {
     "set": 10,
@@ -2361,7 +2361,7 @@ window.VOCABULARY_WORDS = [
       "control",
       "power"
     ],
-    "example": "The court has jurisdiction over civil matters in this region."
+    "example": "The referee has jurisdiction over the match and can remove players who break its rules."
   },
   {
     "set": 10,
@@ -2373,7 +2373,7 @@ window.VOCABULARY_WORDS = [
       "fraudulent",
       "forged"
     ],
-    "example": "The police seized a large quantity of counterfeit money at the border."
+    "example": "The bill was counterfeit: someone had printed fake money to trick the shopkeeper."
   },
   {
     "set": 10,
