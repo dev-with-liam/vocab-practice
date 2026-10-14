@@ -560,3 +560,30 @@ body[data-theme] .app-shell button:disabled { cursor: default; transform: none; 
 body[data-theme="light"] .speak-button { color: #4a4a54; background: #f4f4f7; border-color: #e8e8ed; }
 .vault2-card-head .speak-button { margin-left: auto; }
 .example-label { display: block; margin: 0.65rem 0 0.25rem; color: var(--muted); font-size: 0.72rem; font-weight: 600; }
+
+/* Shared reading layout for every word-parts category and both themes. */
+.word-part-guide {
+  max-width: 80ch;
+  margin: 0;
+  line-height: 1.65;
+  color: var(--muted);
+}
+#rootsGrid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); }
+.word-part-card {
+  min-width: 0;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel-strong);
+  color: var(--ink);
+}
+.word-part-type { font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.word-part-card h3 { margin: .4rem 0 .8rem; font-size: 2rem; line-height: 1.2; overflow-wrap: anywhere; }
+.word-part-card h4 { margin: 1.25rem 0 .75rem; font-size: .85rem; }
+.word-part-meaning, .word-part-examples p { margin: 0; line-height: 1.6; }
+.word-part-examples { display: grid; gap: 1rem; list-style: none; padding: 0; margin: 0; }
+.word-part-examples strong { display: block; font-size: 1rem; line-height: 1.5; overflow-wrap: anywhere; }
+.word-part-examples p { color: var(--muted); margin-top: .25rem; }
+.word-part-sentence { border-top: 1px solid var(--line); padding-top: 1rem; margin: 1.25rem 0 0; line-height: 1.6; }
+.word-part-sentence strong { display: block; font-size: .8rem; margin-bottom: .35rem; }
+body[data-theme="light"] .word-part-card { background: #fff; border-color: #e5e5ec; }

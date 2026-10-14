@@ -20,6 +20,7 @@ A static GitHub Pages app with 857 vocabulary study entries across HSPT, ISEE, a
 - Built-in spoken pronunciation for flashcards and vault entries
 - Separate synonym and opposite multiple-choice practice
 - Mini-games: Match, Sort, and Scramble
+- Word Parts: 58 core lessons across prefixes, suffixes, roots, and stems, each with two explained examples and a sentence
 - Searchable word list
 - Local progress tracking with XP, mastery, missed words, review dates, and session history
 - No build step and no runtime dependencies
@@ -56,3 +57,5 @@ node --test tests/*.test.cjs
 Progress and session state are stored locally under `vocab-progress`. `learning.js` owns migration, XP, mastery, and review scheduling. Clearing browser data removes progress; the Saved progress menu can copy a JSON backup.
 
 Coverage checks verify every supplied entry is reachable through daily sessions and preserve existing entry IDs. These counts describe the bundled study lists, not an exhaustive list of possible exam vocabulary.
+
+Word Parts lessons live in `data/word-parts.js`. Prefixes and suffixes show their position with a hyphen; roots explain word families; stems start with familiar bases and note spelling changes. The original mixed test-prep list in `data/test-stems.js` is retained as source material but is not loaded into the lesson tabs. Core lessons are a teaching selection, not complete exam coverage.

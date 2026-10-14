@@ -5,87 +5,7 @@ const extendedHsptWords = (window.HSPT_PDF_VOCABULARY_WORDS || []).map((word) =>
 const allWords = shuffle([...workbookWords, ...(window.EXAM_VOCABULARY_WORDS || []), ...extendedHsptWords]);
 const vaultWords = allWords;
 const categories = ["HSPT", "ISEE", "SSAT"];
-const wordPartEntries = [
-  ["prefix", "anti", "against", ["antiperspirant", "antibody", "antithesis"]],
-  ["prefix", "bi", "two", ["bicycle", "binary", "bilingual"]],
-  ["prefix", "circum", "around", ["circumference", "circumnavigate", "circumspect"]],
-  ["prefix", "inter", "between", ["interview", "interstellar", "international"]],
-  ["prefix", "mis", "bad or wrong", ["mistake", "misfire", "misguided"]],
-  ["prefix", "mono", "one", ["monogram", "monotone", "monologue"]],
-  ["prefix", "non", "not", ["nonfiction", "nonprofit", "nonstop"]],
-  ["prefix", "post", "after", ["posttest", "postscript", "postgraduate"]],
-  ["prefix", "pre", "before", ["pretest", "preview", "predict"]],
-  ["prefix", "re", "again", ["review", "return", "rewrite"]],
-  ["prefix", "sub", "under", ["submarine", "subway", "subterranean"]],
-  ["prefix", "un", "not", ["unpleasant", "unequal", "unfit"]],
-  ["suffix", "-able", "able to be", ["readable", "portable", "teachable"]],
-  ["suffix", "-er", "one who", ["teacher", "runner", "writer"]],
-  ["suffix", "-ful", "full of", ["hopeful", "careful", "joyful"]],
-  ["suffix", "-ian", "specialist or related to", ["musician", "historian", "magician"]],
-  ["suffix", "-ible", "able to be", ["audible", "visible", "flexible"]],
-  ["suffix", "-ist", "one who practices", ["artist", "scientist", "pianist"]],
-  ["suffix", "-less", "without", ["careless", "fearless", "hopeless"]],
-  ["suffix", "-logy", "study or science of", ["biology", "geology", "mythology"]],
-  ["suffix", "-ment", "act or result", ["movement", "payment", "argument"]],
-  ["suffix", "-ness", "state of being", ["kindness", "fairness", "darkness"]],
-  ["suffix", "-ous", "full of", ["joyous", "famous", "dangerous"]],
-  ["suffix", "-tion", "act or state", ["creation", "reaction", "transition"]],
-  ["root", "aqua", "water", ["aquarium", "aquatic", "aqueduct"]],
-  ["root", "aud/audi", "hear", ["audible", "audience", "audition"]],
-  ["root", "bene", "good", ["benefit", "benevolent", "beneficial"]],
-  ["root", "bio", "life", ["biology", "biography", "biome"]],
-  ["root", "chron", "time", ["chronological", "chronic", "chronicle"]],
-  ["root", "geo", "earth", ["geography", "geology", "geothermal"]],
-  ["root", "hydr/hydro", "water", ["hydroelectric", "hydrate", "hydrogen"]],
-  ["root", "magn", "great", ["magnificent", "magnify", "magnitude"]],
-  ["root", "mal", "bad", ["malnourished", "malicious", "malfunction"]],
-  ["root", "micro", "small", ["microscopic", "microphone", "microbe"]],
-  ["root", "phon", "sound", ["microphone", "symphony", "phonics"]],
-  ["root", "photo", "light", ["photograph", "photosynthesis", "photon"]],
-  ["root", "tele", "far", ["telescope", "telephone", "television"]],
-  ["root", "therm", "heat", ["thermometer", "thermostat", "thermal"]],
-  ["stem", "duct", "to lead", ["conduct", "induct", "deduction"]],
-  ["stem", "fer", "to carry", ["transfer", "ferry", "refer"]],
-  ["stem", "pend", "to hang", ["depend", "pending", "pendulum"]],
-  ["stem", "spec", "to look or see", ["spectator", "spectacle", "inspect"]],
-  ["stem", "port", "to carry", ["transport", "portable", "import"]],
-  ["stem", "scribe", "to write", ["scribble", "describe", "transcribe"]],
-  ["stem", "vid", "to see", ["video", "evidence", "provide"]],
-  ["stem", "ject", "to throw", ["eject", "reject", "project"]],
-  ["stem", "rupt", "to break", ["erupt", "rupture", "interrupt"]],
-  ["stem", "struct", "to build", ["construct", "structure", "instruct"]],
-  ["stem", "cap/cept", "to take or receive", ["capture", "accept", "intercept"]],
-  ["stem", "cred", "to believe", ["credible", "credit", "incredible"]],
-  ["stem", "dict", "to say or tell", ["dictate", "predict", "dictionary"]],
-  ["stem", "fac/fact", "to make or do", ["factory", "manufacture", "artifact"]],
-  ["stem", "graph", "to write or draw", ["autograph", "paragraph", "graphic"]],
-  ["stem", "man", "hand", ["manual", "manage", "manuscript"]],
-  ["stem", "mit/miss", "to send", ["transmit", "dismiss", "mission"]],
-  ["stem", "ped", "foot", ["pedal", "pedestrian", "pedicure"]],
-  ["stem", "press", "to push", ["pressure", "compress", "impress"]],
-  ["stem", "tract", "to pull or draw", ["tractor", "attract", "subtract"]],
-].map(([type, part, meaning, examples]) => ({ type, part, meaning, examples }));
-
-function testWordPartEntries(type) {
-  return (window.TEST_STEM_ROWS || "")
-    .trim()
-    .split("\n")
-    .filter(Boolean)
-    .map((row, index) => {
-      const [part, meaning] = row.split("|");
-      return {
-        type,
-        part,
-        meaning,
-        examples: [],
-        listNumber: Math.floor(index / 25) + 1,
-      };
-    });
-}
-
-const testPrefixEntries = testWordPartEntries("prefix");
-const testRootEntries = testWordPartEntries("root");
-const testStemEntries = testWordPartEntries("stem");
+const wordPartEntries = window.WORD_PART_LESSONS || [];
 
 const antonymHints = {
   abundant: ["scarce", "limited", "lacking"],
@@ -485,15 +405,6 @@ function renderVaultStats(category, shownCount) {
 }
 
 function currentWordParts() {
-  if (state.partFilter === "prefix" && testPrefixEntries.length) {
-    return testPrefixEntries;
-  }
-  if (state.partFilter === "root" && testRootEntries.length) {
-    return testRootEntries;
-  }
-  if (state.partFilter === "stem" && testStemEntries.length) {
-    return testStemEntries;
-  }
   return wordPartEntries.filter((entry) => entry.type === state.partFilter);
 }
 
@@ -509,7 +420,7 @@ function renderRootStats() {
   const entries = currentWordParts();
   els.scopeLabel.textContent = partFilterLabel(state.partFilter);
   els.scopeCount.textContent = `${entries.length} card${entries.length === 1 ? "" : "s"}`;
-  els.rankLabel.textContent = "Flip Study";
+  els.rankLabel.textContent = "Word Building";
   els.progressBar.style.width = "100%";
 }
 
@@ -1047,36 +958,31 @@ function renderList() {
   });
 }
 
+const wordPartGuides = {
+  prefix: "A prefix goes at the beginning of a base word and changes its meaning. For example, un- means not: unhappy means not happy.",
+  suffix: "A suffix goes at the end of a base or root. It can change the meaning or the word's job in a sentence: teach + -er = teacher, a person who teaches.",
+  root: "A root carries a word's core meaning. Many come from Greek or Latin and cannot stand alone: port means carry, as in transport and portable. These clues help, but a whole word's meaning is not always a literal sum of its parts.",
+  stem: "A stem is the form we add an ending to: play + -ing = playing. These lessons start with familiar base words. A stem can already contain a prefix or suffix, as in replay + -ing = replaying. Some test-prep lists also call Greek and Latin roots 'stems'; find those in Roots here."
+};
+
 function renderRoots() {
   const entries = currentWordParts();
   renderRootStats();
-  els.partMeta.textContent = `${partFilterLabel(state.partFilter)} Flashcards`;
+  els.partMeta.textContent = `${partFilterLabel(state.partFilter)} · ${entries.length} core lessons`;
+  document.querySelector("#partGuide").textContent = wordPartGuides[state.partFilter];
   els.rootsGrid.innerHTML = "";
   entries.forEach((entry) => {
     const item = document.createElement("article");
-    item.className = "root-card";
-    const meta = entry.listNumber ? `List ${entry.listNumber}` : entry.type;
-    const examples = entry.examples?.length
-      ? `
-        <p>Examples</p>
-        <ul class="root-examples">
-          ${entry.examples.map((example) => `<li>${example}</li>`).join("")}
-        </ul>
-      `
-      : "";
+    item.className = "word-part-card";
     item.innerHTML = `
-      <div class="root-face root-front">
-        <span>${meta}</span>
-        <h3>${entry.part}</h3>
-        <p>Tap to reveal meaning</p>
-      </div>
-      <div class="root-face root-back">
-        <span>Meaning</span>
-        <h3>${entry.meaning}</h3>
-        ${examples}
-      </div>
+      <header><span class="word-part-type">${entry.type}</span><h3>${entry.part}</h3></header>
+      <p class="word-part-meaning"><strong>Meaning:</strong> ${entry.meaning}</p>
+      <h4>Build and understand</h4>
+      <ul class="word-part-examples">
+        ${entry.examples.map((example) => `<li><strong>${example.build}</strong><p>${example.meaning}</p></li>`).join("")}
+      </ul>
+      <p class="word-part-sentence"><strong>In a sentence</strong>${entry.sentence}</p>
     `;
-    item.addEventListener("click", () => item.classList.toggle("flipped"));
     els.rootsGrid.append(item);
   });
 }
