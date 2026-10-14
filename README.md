@@ -16,7 +16,8 @@ A static GitHub Pages app with 857 vocabulary study entries across HSPT, ISEE, a
 - Learn, Practice, and Games navigation with controls specific to the current activity
 
 - Flashcards by HSPT, ISEE, or SSAT category
-- Multiple-choice synonym and antonym quiz
+- Multiple-choice synonym and antonym quiz with answer explanations and examples
+- Built-in spoken pronunciation for flashcards and vault entries
 - Separate synonym and opposite multiple-choice practice
 - Mini-games: Match, Sort, and Scramble
 - Searchable word list

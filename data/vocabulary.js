@@ -2205,7 +2205,7 @@ window.VOCABULARY_WORDS = [
       "plague",
       "contagion"
     ],
-    "example": "The flu epidemic spread rapidly, aCecting thousands of people in a short time."
+    "example": "The flu epidemic spread rapidly, affecting thousands of people in a short time."
   },
   {
     "set": 10,

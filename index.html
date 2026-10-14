@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Word Quest</title>
     <link rel="stylesheet" href="styles.css?v=20261013e">
-    <link rel="stylesheet" href="practice.css?v=20261013e">
+    <link rel="stylesheet" href="practice.css?v=20261014a">
   </head>
   <body class="home-active">
     <script src="theme.js?v=20261013c"></script>
@@ -179,7 +179,10 @@
           <div class="card-stage">
             <article id="flashcard" class="flashcard" tabindex="0">
               <p id="cardSet" class="card-meta">Set 1</p>
-              <h2 id="cardWord">Word</h2>
+              <div class="flashcard-word-row">
+                <h2 id="cardWord">Word</h2>
+                <button id="cardSpeak" class="speak-button" type="button" aria-label="Hear this word" title="Hear this word">🔊</button>
+              </div>
               <p id="cardPrompt">Tap to reveal clues</p>
               <div id="cardAnswer" class="card-answer" hidden></div>
             </article>
@@ -201,7 +204,7 @@
             <h2 id="quizQuestion"></h2>
             <div id="quizOptions" class="options"></div>
           </div>
-          <p id="quizFeedback" class="feedback"></p>
+          <p id="quizFeedback" class="feedback" role="status" aria-live="polite"></p>
           <div class="action-row">
             <button id="nextQuiz" type="button">Next Round</button>
           </div>
@@ -214,7 +217,7 @@
             <p id="matchPrompt" class="sentence"></p>
             <div id="matchOptions" class="chip-grid"></div>
           </div>
-          <p id="matchFeedback" class="feedback"></p>
+          <p id="matchFeedback" class="feedback" role="status" aria-live="polite"></p>
           <div class="action-row">
             <button id="nextMatch" type="button">New Match</button>
           </div>
@@ -234,7 +237,7 @@
               <button id="sortAntonym" class="secondary" type="button">Opposite</button>
             </div>
           </div>
-          <p id="sortFeedback" class="feedback"></p>
+          <p id="sortFeedback" class="feedback" role="status" aria-live="polite"></p>
           <div class="action-row">
             <button id="nextSort" type="button">New Sort</button>
           </div>
@@ -247,7 +250,7 @@
             <div id="scrambleAnswer" class="answer-slots"></div>
             <div id="scrambleLetters" class="letter-bank"></div>
           </div>
-          <p id="scrambleFeedback" class="feedback"></p>
+          <p id="scrambleFeedback" class="feedback" role="status" aria-live="polite"></p>
           <div class="action-row">
             <button id="clearScramble" class="secondary" type="button">Clear</button>
             <button id="hintScramble" class="secondary" type="button">Hint</button>
@@ -271,7 +274,7 @@
             <h2 id="speedQuestion"></h2>
             <div id="speedOptions" class="options"></div>
           </div>
-          <p id="speedFeedback" class="feedback"></p>
+          <p id="speedFeedback" class="feedback" role="status" aria-live="polite"></p>
           <div class="action-row">
             <button id="restartSpeed" type="button">Start Speed Round</button>
           </div>
@@ -288,7 +291,7 @@
             <h2 id="popClue"></h2>
             <div id="popOptions" class="bubble-grid"></div>
           </div>
-          <p id="popFeedback" class="feedback"></p>
+          <p id="popFeedback" class="feedback" role="status" aria-live="polite"></p>
           <div class="action-row">
             <button id="nextPop" type="button">New Pop</button>
           </div>
@@ -342,6 +345,7 @@
     <script src="data/hspt-pdf-vocabulary.js?v=20260924a"></script>
     <script src="data/test-stems.js?v=20260926a"></script>
     <script src="learning.js?v=20261013e"></script>
-    <script src="app.js?v=20261013e"></script>
+    <script src="data/word-examples.js?v=20261014a"></script>
+    <script src="app.js?v=20261014a"></script>
   </body>
 </html>

@@ -246,6 +246,7 @@ const els = {
   cardAnswer: document.querySelector("#cardAnswer"),
   prevCard: document.querySelector("#prevCard"),
   flipCard: document.querySelector("#flipCard"),
+  cardSpeak: document.querySelector("#cardSpeak"),
   nextCard: document.querySelector("#nextCard"),
   markMissed: document.querySelector("#markMissed"),
   markMastered: document.querySelector("#markMastered"),
@@ -390,6 +391,8 @@ function gameWords(requireAntonym = false) {
 }
 
 function simpleSentence(word) {
+  const curated = window.WORD_EXAMPLE_OVERRIDES?.[word.word.toLowerCase()];
+  if (curated) return curated;
   if (word.example) return word.example;
   const lower = word.word.toLowerCase();
   if (word.partOfSpeech === "v") {
@@ -399,6 +402,31 @@ function simpleSentence(word) {
     return `At lunch, Maya heard a simple example of ${lower}.`;
   }
   return `In middle school, Jordan noticed something ${lower} during the project.`;
+}
+
+function speakWord(word, button) {
+  if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+    button.setAttribute("aria-label", "Speech is not available in this browser");
+    button.title = "Speech is not available in this browser";
+    button.textContent = "🔇";
+    button.disabled = true;
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(word.word);
+  const voices = window.speechSynthesis.getVoices();
+  utterance.voice = voices.find(voice => voice.lang.toLowerCase().startsWith("en-us"))
+    || voices.find(voice => voice.lang.toLowerCase().startsWith("en")) || null;
+  utterance.lang = utterance.voice?.lang || "en-US";
+  utterance.rate = 0.82;
+  window.speechSynthesis.speak(utterance);
+}
+
+function explainAnswer(word, kind = "synonym") {
+  const explanation = kind === "antonym"
+    ? `“${word.word}” is the opposite of “${antonymsFor(word)[0]}”.`
+    : `“${word.word}” means “${word.synonyms[0]}”.`;
+  return `${explanation} Example: ${simpleSentence(word)}`;
 }
 
 function categoryLabel(category) {
@@ -495,12 +523,14 @@ function renderFlashcard(animate = false) {
   const word = currentWord();
   els.cardSet.textContent = setMeta(word);
   els.cardWord.textContent = word.word;
+  els.cardSpeak.setAttribute("aria-label", `Hear ${word.word} pronounced`);
+  els.cardSpeak.title = `Hear ${word.word} pronounced`;
   els.cardPrompt.textContent = state.revealed ? simpleSentence(word) : "Tap to reveal clues";
   els.cardAnswer.hidden = !state.revealed;
   els.cardAnswer.innerHTML = `
     <p><span>Synonyms</span><strong>${cleanSynonyms(word)}</strong></p>
     <p><span>Antonyms</span><strong>${cleanAntonyms(word)}</strong></p>
-    <p>${simpleSentence(word)}</p>
+    <p><span>Example</span>${simpleSentence(word)}</p>
   `;
   els.flipCard.textContent = state.revealed ? "Hide" : "Reveal";
   els.flashcard.classList.toggle("revealed", state.revealed);
@@ -567,9 +597,7 @@ function answerQuiz(selected, button) {
     optionButton.disabled = true;
   });
   setStatus(quiz.answer, correct ? "mastered" : "missed");
-  els.quizFeedback.textContent = correct
-    ? `✅ Correct! Combo x${state.progress.streak}. ${quiz.answer.word}: ${cleanSynonyms(quiz.answer)}. Opposite: ${cleanAntonyms(quiz.answer)}.`
-    : `❌ Not quite. Answer: ${quiz.answer.word}. Synonyms: ${cleanSynonyms(quiz.answer)}. Antonyms: ${cleanAntonyms(quiz.answer)}.`;
+  els.quizFeedback.textContent = `${correct ? "✅ Correct! " : "❌ Not quite. "}${explainAnswer(quiz.answer, quiz.kind)} ${quiz.kind === "antonym" ? `Synonyms: ${cleanSynonyms(quiz.answer)}.` : `Opposite: ${cleanAntonyms(quiz.answer)}.`}`;
 }
 
 function makeMatchRound() {
@@ -624,8 +652,8 @@ function answerMatch(choice, button) {
   if (!correct) button.textContent = `❌ ${choice}`;
   setStatus(round.answer, correct ? "mastered" : "missed");
   els.matchFeedback.textContent = correct
-    ? `✅ Match made. ${round.answer.word} means ${cleanSynonyms(round.answer)}.`
-    : `❌ The best match was ${round.target}.`;
+    ? `✅ Match made. ${explainAnswer(round.answer)}`
+    : `❌ The best match was ${round.target}. ${explainAnswer(round.answer)}`;
 }
 
 function makeSortRound() {
@@ -674,8 +702,8 @@ function answerSort(choice) {
   els.sortAntonym.disabled = true;
   setStatus(round.answer, correct ? "mastered" : "missed");
   els.sortFeedback.textContent = correct
-    ? `✅ Sorted. ${round.clue} is a ${round.kind} for ${round.answer.word}.`
-    : `❌ ${round.clue} is a ${round.kind} for ${round.answer.word}.`;
+    ? `✅ Sorted. ${round.clue} is a ${round.kind} for ${round.answer.word}. ${explainAnswer(round.answer)}`
+    : `❌ ${round.clue} is a ${round.kind} for ${round.answer.word}. ${explainAnswer(round.answer)}`;
 }
 
 function scrambleLetters(word) {
@@ -811,8 +839,8 @@ function checkScrambleIfComplete() {
   round.answered = true;
   setStatus(round.answer, correct ? "mastered" : "missed");
   els.scrambleFeedback.textContent = correct
-    ? `✅ Solved. ${round.answer.word}: ${cleanSynonyms(round.answer)}.`
-    : `❌ Answer: ${round.answer.word}. Tap New Scramble to try another.`;
+    ? `✅ Solved. ${explainAnswer(round.answer)}`
+    : `❌ Answer: ${explainAnswer(round.answer)} Tap New Scramble to try another.`;
   renderScramble();
 }
 
@@ -922,7 +950,7 @@ function answerSpeed(selected, button) {
   });
   setStatus(answer, correct ? "mastered" : "missed");
   els.speedScore.textContent = `${round.score}/${round.words.length}`;
-  els.speedFeedback.textContent = correct ? `Correct: ${answer.word}.` : `Answer: ${answer.word}.`;
+  els.speedFeedback.textContent = `${correct ? "Correct. " : "Answer: "}${explainAnswer(answer)}`;
   setTimeout(() => {
     if (state.currentSpeed !== round || state.mode !== "speed") return;
     round.index += 1;
@@ -980,9 +1008,7 @@ function answerPop(selected, button) {
   });
   setStatus(round.answer, correct ? "mastered" : "missed");
   els.popScore.textContent = String(round.score);
-  els.popFeedback.textContent = correct
-    ? `Pop! ${round.answer.word} means ${cleanSynonyms(round.answer)}.`
-    : `Not that bubble. Answer: ${round.answer.word}.`;
+  els.popFeedback.textContent = `${correct ? "Pop! " : "Not that bubble. Answer: "}${explainAnswer(round.answer)}`;
 }
 
 function renderList() {
@@ -1003,6 +1029,7 @@ function renderList() {
       <div class="vault2-card-head">
         <span class="badge">${categoryLabel(word.source)} ${word.set}</span>
         <span class="vault2-status">${status}</span>
+        <button class="speak-button" type="button" aria-label="Hear ${word.word} pronounced" title="Hear ${word.word} pronounced">🔊</button>
       </div>
       <h3>${word.word}</h3>
       <span class="vault2-part">${word.partOfSpeech}</span>
@@ -1012,6 +1039,10 @@ function renderList() {
       </div>
       <p class="vault2-example">${simpleSentence(word)}</p>
     `;
+    item.querySelector(".speak-button").addEventListener("click", event => {
+      event.stopPropagation();
+      speakWord(word, event.currentTarget);
+    });
     els.wordList.append(item);
   });
 }
@@ -1223,7 +1254,7 @@ function renderDailySession() {
     options.append(button);
   });
   document.querySelector('#dailyFeedback').textContent = result
-    ? `${result.correct ? 'Correct.' : 'Keep practicing.'} ${word.word}: ${cleanSynonyms(word)}. ${result.earned ? `+${result.earned} XP.` : result.correct ? 'You already earned XP for this word today.' : 'We’ll review this word tomorrow.'}`
+    ? `${result.correct ? 'Correct. ' : 'Keep practicing. '}${explainAnswer(word)} ${result.earned ? `+${result.earned} XP.` : result.correct ? 'You already earned XP for this word today.' : 'We’ll review this word tomorrow.'}`
     : '';
   const next = document.querySelector('#dailyNext');
   next.disabled = !result;
@@ -1368,6 +1399,10 @@ function setup() {
   els.markMastered.addEventListener("click", () => {
     setStatus(currentWord(), "mastered");
     els.nextCard.click();
+  });
+  els.cardSpeak.addEventListener("click", event => {
+    event.stopPropagation();
+    speakWord(currentWord(), els.cardSpeak);
   });
   els.nextQuiz.addEventListener("click", () => makeQuizQuestion());
   els.nextMatch.addEventListener("click", makeMatchRound);
